@@ -2,11 +2,14 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-   require("./public/helperfuncs.js")
-   require("./public/actor.js")
-   require("./public/ship.js")
-   require("./public/sea.js")
-var sea = new Sea();
+
+require("./public/helperfuncs.js");
+require("./public/actor.js");
+require("./public/ship.js");
+const { Sea } = require("./public/sea.js");
+
+let sea = new Sea();
+
 app.use(express.static('public'));
 
 app.get("/", function (request, response) {

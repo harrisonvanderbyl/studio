@@ -1,4 +1,4 @@
-var Sea = (mode="client", actors=[])=>{
+function Sea(mode="client", actors=[]) {
   //these are all actors
   this.actors = actors;
   
@@ -19,3 +19,5 @@ var Sea = (mode="client", actors=[])=>{
     }
   }
 }
+
+exports.Sea = Sea;
