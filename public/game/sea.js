@@ -1,7 +1,7 @@
 class Sea {
   constructor (seaid, maxPlayers=10, actors=[]) {
     this.maxPlayers = maxPlayers;
-    
+    this.pos = new Victor(20, 30);
     //these are all actors
     this.actors = actors;
     this.seaid = seaid;

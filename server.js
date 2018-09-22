@@ -22,7 +22,7 @@ io.on('connection', function(socket) {
     socket.emit('pongoid', msg);
   });
   socket.on('enter lobby', function(seaid, pid) {
-    if(seaid >= SEAS_LIMIT) return socket.emit('weberror', "no lobby found");
+    if(seaid >= SEAS_LIMIT) return socket.emit('weberror', "No lobby found.\nPlease refresh the browser, and try again.");
     if(seaid == -1) {
       do {
         seaid += 1;
@@ -39,7 +39,10 @@ io.on('connection', function(socket) {
     pship.id = pid;
 
     let toClient = {
-      player: pship,
+      player: {
+        pos: {x: pos.x, y: pos.y},
+        size: {x: pos.x, y: pos.y}
+      },
       sea: seas[seaid],
       seaid: seaid
     }

@@ -23,8 +23,7 @@ class Actor {
   
   draw() {
     if(this.image[0] == "#") {
-      fill(this.image);
-      rect(this.pos.x, this.pos.y, this.size.x, this.size.y)
+      //TODO rectangle rendering
     } else {
       //TODO sprite rendering
     }

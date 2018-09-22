@@ -4,6 +4,7 @@ class Ship extends Actor {
         this.isPlayer = isPlayer;
         this.id = id;
         this.type = "ship";
+        this.keys = {};
     }
 
     turn(dir=-1) { // -1 for left, +1 for right.
@@ -16,9 +17,20 @@ class Ship extends Actor {
 
     update() {
         //stub
+        if(this.keys.left && !this.keys.right) {
+            this.turn(left);
+        } else if(this.keys.right) {
+            this.turn(right);
+        }
+        if(this.keys.forward) {
+            this.boost();
+        }
+
+        super.update();
     }
 
     draw() {
         //stub
+        super.draw();
     }
 }
