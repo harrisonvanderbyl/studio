@@ -6,7 +6,7 @@ const io = require('socket.io')(http);
    require("./public/actor.js")
    require("./public/ship.js")
    require("./public/sea.js")
-var a = new Sea();
+var sea = new Sea();
 app.use(express.static('public'));
 
 app.get("/", function (request, response) {
