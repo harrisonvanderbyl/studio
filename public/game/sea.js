@@ -1,14 +1,19 @@
 class Sea {
-  constructor (maxPlayers=10, actors=[]) {
+  constructor (seaid, maxPlayers=10, actors=[]) {
     this.maxPlayers = maxPlayers;
     
     //these are all actors
     this.actors = actors;
-
+    this.seaid = seaid;
+    this.ticker = 0;
     this.players = 0;
     for(i in this.actors) {
       if(this.actors[i].type == 'ship') this.players += 1;
     }
+  }
+
+  deregister() { // THIS MUST BE CALLED BEFORE THE SEA IS DESTROYED (at least on the server side, i guess)
+    clearEventListener(this.ticker);
   }
   
   update() {
@@ -19,6 +24,7 @@ class Sea {
 
   addPlayer(ship) {
     this.players += 1;
+    this.actors.push(ship);
   }
 
   get isFull() {

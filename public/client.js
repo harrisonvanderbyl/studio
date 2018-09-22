@@ -20,7 +20,8 @@ $(function() {
     })
 
     socket.on("new game", function(data) {
-        
+        console.log("connection made to a new game!");
+        console.log(data);
     })
     
     function setup() {
