@@ -3,12 +3,9 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-require("./public/helperfuncs.js");
-require("./public/actor.js");
-require("./public/ship.js");
-const { Sea } = require("./public/sea.js");
+const game = require('./build/out.js');
 
-let sea = new Sea();
+let sea = new game.Sea();
 
 app.use(express.static('public'));
 
