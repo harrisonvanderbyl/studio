@@ -20,4 +20,6 @@ function Sea(mode="client", actors=[]) {
   }
 }
 
-exports.Sea = Sea;
+try {
+  exports.Sea = Sea;
+} catch (ReferenceError) {}

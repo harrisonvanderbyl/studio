@@ -17,14 +17,10 @@ app.get("/", function (request, response) {
 });
 
 io.on('connection', function(socket) {
-  socket.on("hello world", function(msg) {
-    io.emit("hello world", msg);
-  });
-  socket.on('chat message', function(msg) {
-    io.emit('chat message', msg);
+  socket.on('pingoid', function(msg) {
+    socket.emit('pongoid', msg);
   });
 });
-
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });

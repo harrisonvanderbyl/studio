@@ -1,4 +1,4 @@
-var Actor = (pos, vel, ang)=>{
+function Actor(pos, vel, ang) {
   this.pos = pos;
   this.vel = vel;
   this.ang = ang;
@@ -13,6 +13,7 @@ var Actor = (pos, vel, ang)=>{
     
   }
 }
-/* example syntax: class Ship extends Actor {
-  super(); // calls the constructor of actor on this function. MUST BE CALLED BEFORE REFERENCING THISDOT
-}*/
+
+try {
+  exports.Actor = Actor;
+} catch (ReferenceError) {}

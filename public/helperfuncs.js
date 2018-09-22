@@ -11,3 +11,7 @@ function makeSlug(min, max){
 	}
 	return t;
 }
+
+try {
+	exports.makeSlug = makeSlug;
+} catch (ReferenceError) {}
