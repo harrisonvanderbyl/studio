@@ -1,5 +1,7 @@
 rm ./build/out.js
 touch ./build/out.js
-for i in `find ./public/game/ -name '*.js'`; do cat $i >> ./build/out.js; printf "\n" >> ./build/out.js; done
-for i in `find ./public/game/ -name '*.js'`; do echo $i; done
+cat ./public/game/sea.js >> ./build/out.js
+cat ./public/game/actor.js >> ./build/out.js
+cat ./public/game/ship.js >> ./build/out.js
+cat ./public/game/helperfuncs.js >> ./build/out.js
 cat ./public/nodeexportscript.js >> ./build/out.js
