@@ -1,7 +1,9 @@
 class Ship extends Actor {
-    constructor(isPlayer=false) {
+    constructor(id, isPlayer=false) {
         super();
         this.isPlayer = isPlayer;
+        this.id = id;
+        this.type = "ship";
     }
 
     turn(dir=-1) { // -1 for left, +1 for right.
@@ -13,12 +15,10 @@ class Ship extends Actor {
     }
 
     update() {
-        super();
         //stub
     }
 
     draw() {
-        super();
         //stub
     }
 }
