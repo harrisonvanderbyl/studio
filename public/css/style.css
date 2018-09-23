@@ -3,3 +3,8 @@
     left: 10px;
     top: 10px;
 }
+#main-canv {
+    width: 500px;
+    height: 500px;
+    border: 1px solid red;
+}

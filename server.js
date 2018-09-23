@@ -3,11 +3,12 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+const Victor = require('victor');
 const gm = require('./build/out.js');
 
 const SEAS_LIMIT=gm.opts.SEAS_LIMIT;
 const FPS=gm.opts.FPS;
-const TICKFREQ=1000 / FPS;
+const TICKFREQ=Math.floor(1000 / FPS);
 
 let seas = [];
 
@@ -18,32 +19,43 @@ app.get("/", function (req, res) {
 });
 
 io.on('connection', function(socket) {
+  
   socket.on('pingoid', function(msg) {
     socket.emit('pongoid', msg);
   });
+  
+  socket.on('keydown', function(room, pid, key) {
+    //console.log("keydown in room:", room, " player:", pid, " key:", key);
+    let keyBuf = seas[room].getPlayerById(pid).retKey(key, true);
+    seas[room].keyBuffers[pid] = keyBuf;
+  });
+  
+  socket.on('keyup', function(room, pid, key) {
+    //console.log("keyup in room:", room, " player:", pid, " key:", key);
+    let keyBuf = seas[room].getPlayerById(pid).retKey(key, false);
+    seas[room].keyBuffers[pid] = keyBuf;
+  });
+  
   socket.on('enter lobby', function(seaid, pid) {
     if(seaid >= SEAS_LIMIT) return socket.emit('weberror', "No lobby found.\nPlease refresh the browser, and try again.");
     if(seaid == -1) {
       do {
         seaid += 1;
-      } while(seas[seaid].isFull);
+      } while(seas[seaid] && seas[seaid].isFull);
     }
     if(!seas[seaid]) {
-      seas[seaid] = new gm.Sea(seaid);
-      console.log(TICKFREQ);
+      seas[seaid] = new gm.Sea(seaid, gm.opts.SEA_SIZE);
       setInterval(updateSea, TICKFREQ, seaid);
-      console.log("created new sea: " + seaid);
+      console.log("created new sea: " + seaid + " tickfreq: " + TICKFREQ);
     }
 
-    let pship = new gm.Ship();
-    pship.id = pid;
+    let tpos = new Victor(0, 0).randomize(new Victor(0, 0), seas[seaid].size);
+    let pship = new gm.Ship(pid, tpos);
+    console.log(pship.id);
+    seas[seaid].actors.push(pship);
 
     let toClient = {
-      player: {
-        pos: {x: pos.x, y: pos.y},
-        size: {x: pos.x, y: pos.y}
-      },
-      sea: seas[seaid],
+      sea: seas[seaid].exportState(),
       seaid: seaid
     }
 
@@ -51,11 +63,12 @@ io.on('connection', function(socket) {
   });
 });
 
-function updateSea(seaid) { // todo: make this actually multithreaded. (if we want to use experimental builds of nodejs lol)
+function updateSea(seaid) { // todo: make this actually multithreaded. (if we want to use experimental builds of nodejs lol) 
+// todo: remove these dumb todo's
   let sea = seas[seaid];
   sea.update();
 }
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(process.env.PORT, function(){
+  console.log('listening on '+process.env.IP+'*:'+process.env.PORT);
 });
