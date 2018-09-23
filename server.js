@@ -3,6 +3,8 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+require('dotenv').config();
+
 const Victor = require('victor');
 const gm = require('./build/out.js');
 
@@ -20,8 +22,8 @@ app.get("/", function (req, res) {
 
 io.on('connection', function(socket) {
   
-  socket.on('pingoid', function(msg) {
-    socket.emit('pongoid', msg);
+  socket.on('pingoid', function(msg, pid) {
+    socket.emit('pongoid', msg, pid);
   });
   
   socket.on('keydown', function(room, pid, key) {
@@ -70,5 +72,5 @@ function updateSea(seaid) { // todo: make this actually multithreaded. (if we wa
 }
 
 http.listen(process.env.PORT, function(){
-  console.log('listening on '+process.env.IP+'*:'+process.env.PORT);
+  console.log('listening on *:'+process.env.PORT);
 });
