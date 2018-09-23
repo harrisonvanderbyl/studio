@@ -3,6 +3,9 @@
 $(function() {
     let cnv = document.getElementById("main-canv");
     let ctx = cnv.getContext("2d");
+    let cnvBCR = cnv.getBoundingClientRect();
+
+    let screenDims = new Victor(cnvBCR.width, cnvBCR.height);
     
     let GAME_IS_READY = false;
     
@@ -59,14 +62,13 @@ $(function() {
         });
     } setup();
     
-    function draw() {
+    function tick() {
         if(GAME_IS_READY) {
             let player = sea.getActorById(mid);
             
             if(player) {
                 playerMissingBuffer = 0;
                 sea.update();
-                sea.draw(ctx, mid);
             } else {
                 playerMissingBuffer += 1;
                 if(playerMissingBuffer >= 10) {
@@ -76,5 +78,13 @@ $(function() {
             }
             //console.log(player.keys);
         }
-    } let drawFunc = setInterval(draw, Math.floor(1000 / opts.FPS))
-})
+    } let tickFunc = setInterval(tick, Math.floor(1000 / opts.FPS));
+
+    function draw() {
+        if(GAME_IS_READY) {
+            let player = sea.getActorById(mid);
+            let cam = createCamera(player.pos, screenDims, sea.size);
+            sea.draw(ctx, cam);
+        }
+    } let drawFunc = setInterval(draw, Math.floor(1000 / opts.FPS));
+});

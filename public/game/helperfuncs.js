@@ -20,3 +20,17 @@ function getIndexOfActorById(id, arr) {
 	}
 	return -1;
 }
+
+function clampVec(vec, min, max) {
+	let tvec = vec.clone();
+	tvec.x = Math.max(min.x, Math.min(tvec.x, max.x));
+	tvec.y = Math.max(min.y, Math.min(tvec.y, max.y));
+	return tvec;
+}
+
+function createCamera(playerPos, screenDims, seaDims) {
+	let cam = playerPos.clone();
+	cam.add(playerPos);
+	cam = clampVec(cam, new Victor(0, 0), seaDims);
+
+}

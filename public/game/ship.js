@@ -8,15 +8,15 @@ class Ship extends Actor {
     }
 
     exportState() {
-        let state  = {};
-        
-        state.pos  = this.pos;
-        state.size = this.size;
-        state.ang  = this.ang;
-        state.vel  = this.vel;
-        state.keys = this.keys;
-        state.id   = this.id;
-        state.type = this.type;
+        let state  = {
+            pos: this.pos,
+            state: this.size,
+            ang: this.ang,
+            vel: this.vel,
+            keys: this.keys,
+            id: this.id,
+            type: this.type
+        };
     
         return state;
     }
@@ -57,8 +57,8 @@ class Ship extends Actor {
         super.update();
     }
 
-    draw() {
+    draw(ctx, cam) {
         //stub
-        super.draw();
+        super.draw(ctx, cam);
     }
 }

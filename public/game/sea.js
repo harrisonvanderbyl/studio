@@ -26,6 +26,9 @@ class Sea {
   }
   
   importState(state) {
+    this.size = state.size;
+    this.players = state.players;
+
     for(let i in state.actors) {
       let tstate = state.actors[i];
       let actor = this.getActorById(state.actors[i].id);
@@ -50,7 +53,7 @@ class Sea {
   }
   
   exportState(){
-    let state = {actors: []};
+    let state = {actors: [], size: this.size, players: this.players};
     for(let i in this.actors) {
       if(this.actors[i]) {
         state.actors.push(this.actors[i].exportState());
@@ -74,8 +77,10 @@ class Sea {
     }
   }
 
-  draw(ctx, pid) {
-
+  draw(ctx, cam) {
+    for(let i in this.actors) {
+      this.actors[i].draw(ctx, cam);
+    }
   }
 
   addPlayer(ship) {

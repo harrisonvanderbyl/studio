@@ -30,19 +30,15 @@ class Actor {
     this.velocity+=1.0;
   }
   
-  draw() {
+  draw(ctx, cam) {
     if(this.image[0] == "#") {
       //TODO rectangle rendering
-      var c = document.getElementById("main-canv");
-      var ctx = c.getContext("2d");
       ctx.fillStyle = this.image;
-      ctx.fillRect(this.pos[0],this.pos[1],5,5);
+      ctx.fillRect(this.pos.x - this.size.x + this.cam.x, this.pos.y - this.size.y + this.cam.x, this.size.x, this.size.y);
     } else {
       //TODO sprite rendering
-      var c = document.getElementById("main-canv");
-      var ctx = c.getContext("2d");
-       var img = document.getElementById("scream");
-      ctx.drawImage(img,this.pos[0],this.pos[1],50,50);
+      var img = document.getElementById("scream");
+      ctx.drawImage(img, this.pos[0], this.pos[1], 50, 50);
     }
   }
 }
