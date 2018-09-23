@@ -16,8 +16,7 @@ I'm sincerely sorry for this horror. But at least it works.
 
 ## TODO
 
-- [ ] a
-- [x] b
+- [ ] get the game to a functioning state where this even means anything
 
 
 ## Map

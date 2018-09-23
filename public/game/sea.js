@@ -24,6 +24,14 @@ class Sea {
   deregister() { // THIS MUST BE CALLED BEFORE THE SEA IS DESTROYED (at least on the server side, i guess)
     clearEventListener(this.ticker);
   }
+
+  removeActorById(pid) {
+    for(let i in this.actors) {
+      if(this.actors[i].id == pid) {
+        this.actors.splice(i, 1);
+      }
+    }
+  }
   
   importState(state) {
     for(let i in state.actors) {
@@ -60,6 +68,13 @@ class Sea {
   }
   
   update() {
+    for (let pid in this.keyBuffers) { // update the keys pressed, for each user.
+      let player = this.getActorById(pid);
+      if(player) {
+        player.keys = this.keyBuffers[pid];
+      }
+    }
+
     for (let i in this.actors) {
       this.actors[i].update();
     }

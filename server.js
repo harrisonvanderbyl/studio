@@ -20,26 +20,57 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+let lastPings = {};
+let playersSeas = {};
+
+function removePlayer(pid) {
+  let tsea = seas[playersSeas[pid]];
+  if(tsea) {
+    tsea.removeActorById(pid);
+  }
+  delete playersSeas[pid];
+  delete lastPings[pid];
+}
+
+function checkPings() {
+  for(let pid in lastPings) {
+    let latency = Date.now() - lastPings[pid];
+    if(latency > gm.opts.MAX_PING) {
+      console.log("kicking player: ", pid);
+      removePlayer(pid);
+    }
+  }
+}
+setInterval(checkPings, 500);
+
+function keyProc(tf, socket, room, pid, key) {
+  if(seas[room]) {
+    let keyBuf = seas[room].getActorById(pid).retKey(key, tf);
+    seas[room].keyBuffers[pid] = keyBuf;
+  } else {
+    socket.emit("fatalerror", "Your sea couldnt be found. Please refresh the browser, and try again.")
+  }
+}
+
 io.on('connection', function(socket) {
   
   socket.on('pingoid', function(msg, pid) {
-    socket.emit('pongoid', msg, pid);
+    lastPings[pid] = Date.now();
+    socket.emit('pongoid', msg);
   });
   
   socket.on('keydown', function(room, pid, key) {
     //console.log("keydown in room:", room, " player:", pid, " key:", key);
-    let keyBuf = seas[room].getPlayerById(pid).retKey(key, true);
-    seas[room].keyBuffers[pid] = keyBuf;
+    keyProc(true, socket, room, pid, key);
   });
   
   socket.on('keyup', function(room, pid, key) {
     //console.log("keyup in room:", room, " player:", pid, " key:", key);
-    let keyBuf = seas[room].getPlayerById(pid).retKey(key, false);
-    seas[room].keyBuffers[pid] = keyBuf;
+    keyProc(false, socket, room, pid, key);
   });
   
   socket.on('enter lobby', function(seaid, pid) {
-    if(seaid >= SEAS_LIMIT) return socket.emit('weberror', "No lobby found.\nPlease refresh the browser, and try again.");
+    if(seaid >= SEAS_LIMIT) return socket.emit('fatalerror', "No lobby found.\nPlease refresh the browser, and try again.");
     if(seaid == -1) {
       do {
         seaid += 1;
@@ -50,6 +81,8 @@ io.on('connection', function(socket) {
       setInterval(updateSea, TICKFREQ, seaid);
       console.log("created new sea: " + seaid + " tickfreq: " + TICKFREQ);
     }
+    playersSeas[pid] = seaid;
+    socket.join('sea-'+seaid);
 
     let tpos = new Victor(0, 0).randomize(new Victor(0, 0), seas[seaid].size);
     let pship = new gm.Ship(pid, tpos);
@@ -69,6 +102,9 @@ function updateSea(seaid) { // todo: make this actually multithreaded. (if we wa
 // todo: remove these dumb todo's
   let sea = seas[seaid];
   sea.update();
+
+  let state = sea.exportState();
+  io.to('sea-'+seaid).emit('heartbeat', state);
 }
 
 http.listen(process.env.PORT, function(){

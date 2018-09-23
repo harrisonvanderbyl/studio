@@ -9,23 +9,26 @@ $(function() {
     let sea = new Sea();
     const socket = io();
     const mid = makeSlug(10, 10);
+
+    let playerMissingBuffer = 0;
     
     let url = new URL(window.location.href);
     let roomNum = url.searchParams.get("room") || -1;
     
-    socket.on('pongoid', function(msg) {
-        let latency = Date.now() - msg;
-        $("#ping-holder").text("Ping: " + latency);
-        setTimeout(function() {socket.emit('pingoid', Date.now());}, 1000);
-    });
-    socket.emit('pingoid', Date.now());
-    
     function setup() {
         socket.emit("enter lobby", roomNum, mid);
 
-        socket.on("weberror", function(err) {
+        socket.on("fatalerror", function(err) {
             alert(err);
-        })
+            GAME_IS_READY = false;
+        });
+
+        socket.on('pongoid', function(msg) {
+            let latency = Date.now() - msg;
+            $("#ping-holder").text("Ping: " + latency);
+            setTimeout(function() {socket.emit('pingoid', Date.now(), mid);}, 1000);
+        });
+        socket.emit('pingoid', Date.now(), mid);
     
         socket.on("new game", function(data) {
             console.log("connection made to a new game!");
@@ -36,13 +39,18 @@ $(function() {
             
             GAME_IS_READY = true;
         });
+
+        socket.on("heartbeat", function(data) {
+            sea.importState(data);
+            console.log(sea.actors[0].ang);
+        })
         
         document.addEventListener('keydown', function(e) {
-            sea.getActorById(mid).setKey(e.keyCode, true);
-            socket.emit('keydown', roomNum, mid, e.keyCode);
+            sea.keyBuffers[mid] = player.retKey(e.keyCode, true);
+            socket.emit('keyup', roomNum, mid, e.keyCode)
         });
         document.addEventListener('keyup', function(e) {
-            sea.getActorById(mid).setKey(e.keyCode, false);
+            sea.keyBuffers[mid] = player.retKey(e.keyCode, false);
             socket.emit('keyup', roomNum, mid, e.keyCode)
         });
     } setup();
@@ -52,12 +60,17 @@ $(function() {
             let player = sea.getActorById(mid);
             
             if(player) {
-               player.update();
-               player.draw();
+                playerMissingBuffer = 0;
+                player.update();
+                player.draw();
             } else {
-                console.log("Warning! Player not found. Was looking for: " + mid + " got " + player);
+                playerMissingBuffer += 1;
+                if(playerMissingBuffer >= 20) {
+                    alert("Couldn't find your player, 20 times in a row. Please refresh your browser, you probably just timed out!");
+                    GAME_IS_READY = false;
+                }
             }
             //console.log(player.keys);
         }
-    } setInterval(draw, opts.FPS)
+    } let drawFunc = setInterval(draw, Math.floor(1000 / opts.FPS))
 })
