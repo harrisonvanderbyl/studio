@@ -1,16 +1,15 @@
 /* global Victor Actor */
 class Ship extends Actor {
-    constructor(id, pos=new Victor(100, 100), size=new Victor(100, 100), vel=0.5, ang=0) {
-        super(pos, size, vel, ang);
-        this.id = id;
+    constructor(id, pos=new Victor(10, 10), size=new Victor(10, 10), vel=0.5, ang=0, accel=0.4, velCap=3, turnSpeed=2, image="#6600ff") {
+        super(id, pos, size, vel, ang, accel, velCap, turnSpeed, image);
         this.type = "ship";
         this.keys = {left: false, right: false, forward: false};
     }
 
     exportState() {
         let state  = {
-            pos: this.pos,
-            state: this.size,
+            pos: this.pos.toObject(),
+            size: this.size.toObject(),
             ang: this.ang,
             vel: this.vel,
             keys: this.keys,
@@ -22,8 +21,8 @@ class Ship extends Actor {
     }
     
     importState(state) {
-        this.pos  = new Victor(state.pos);
-        this.size = new Victor(state.size);
+        this.pos  = Victor.fromObject(state.pos);
+        this.size = Victor.fromObject(state.size);
         this.ang  = state.ang;
         this.vel  = state.vel;
         this.keys = state.keys;

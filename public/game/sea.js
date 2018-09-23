@@ -26,7 +26,7 @@ class Sea {
   }
   
   importState(state) {
-    this.size = state.size;
+    this.size = Victor.fromObject(state.size);
     this.players = state.players;
 
     for(let i in state.actors) {
@@ -53,7 +53,8 @@ class Sea {
   }
   
   exportState(){
-    let state = {actors: [], size: this.size, players: this.players};
+    let state = {actors: [], size: this.size.toObject(), players: this.players};
+
     for(let i in this.actors) {
       if(this.actors[i]) {
         state.actors.push(this.actors[i].exportState());

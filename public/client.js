@@ -3,9 +3,13 @@
 $(function() {
     let cnv = document.getElementById("main-canv");
     let ctx = cnv.getContext("2d");
-    let cnvBCR = cnv.getBoundingClientRect();
 
+    cnv.setAttribute("width", 500);
+    cnv.setAttribute("height", 500);
+
+    let cnvBCR = cnv.getBoundingClientRect();
     let screenDims = new Victor(cnvBCR.width, cnvBCR.height);
+    console.log('screeDims', screenDims);
     
     let GAME_IS_READY = false;
     
@@ -83,7 +87,7 @@ $(function() {
     function draw() {
         if(GAME_IS_READY) {
             let player = sea.getActorById(mid);
-            let cam = createCamera(player.pos, screenDims, sea.size);
+            let cam = createCamera(player.pos.clone(), screenDims.clone(), sea.size.clone());
             sea.draw(ctx, cam);
         }
     } let drawFunc = setInterval(draw, Math.floor(1000 / opts.FPS));

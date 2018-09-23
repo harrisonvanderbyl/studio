@@ -30,7 +30,7 @@ function clampVec(vec, min, max) {
 
 function createCamera(playerPos, screenDims, seaDims) {
 	let cam = playerPos.clone();
-	cam.add(playerPos);
-	cam = clampVec(cam, new Victor(0, 0), seaDims);
-
+	cam = clampVec(cam, new Victor(0, 0), seaDims.subtract(screenDims));
+	cam.subtract(screenDims.divide(new Victor(2, 2)));
+	return cam;
 }
