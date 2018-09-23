@@ -24,33 +24,27 @@ class Sea {
   deregister() { // THIS MUST BE CALLED BEFORE THE SEA IS DESTROYED (at least on the server side, i guess)
     clearEventListener(this.ticker);
   }
-
-  removeActorById(pid) {
-    for(let i in this.actors) {
-      if(this.actors[i].id == pid) {
-        this.actors.splice(i, 1);
-      }
-    }
-  }
   
   importState(state) {
     for(let i in state.actors) {
+      let tstate = state.actors[i];
       let actor = this.getActorById(state.actors[i].id);
       if(actor) {
-        this.actors[i].importState(state.actors[i]);
+        actor.importState(state.actors[i]);
       } else {
-        if(state.actors[i].type == "ship") {
-          let tship = new Ship();
-          tship.importState(state.actors[i]);
-          this.actors.push(tship);
-        }
+        console.log("(in sea.importState) couldn't find ship with id of",tstate.id,"choosing to create one");
+        let s = new Ship(tstate.id);
+        s.importState(tstate);
+        this.addPlayer(s);
+        //console.log("created ship with id",s.id);
       }
     }
     for(let i in this.actors) {
-      let actor = this.getActorById(this.actors[i], state);
-      if(!actor) {
+      let actor = this.getActorById(this.actors[i].id, state.actors);
+      if(actor == false) {
+        console.log('removing actor with id of ' + this.actors[i].id);
         // the actor doesn't exist in the new state, it should be removed.
-        this.actors.splice(i, 1);
+        this.removeActorByIndex(i);
       }
     }
   }
@@ -80,9 +74,25 @@ class Sea {
     }
   }
 
+  draw(ctx, pid) {
+
+  }
+
   addPlayer(ship) {
     this.players += 1;
     this.actors.push(ship);
+  }
+  removeActorById(pid) {
+    for(let i in this.actors) {
+      if(this.actors[i].id == pid) {
+        if(this.actors[i].type == 'ship') this.players -= 1;
+        this.actors.splice(i, 1);
+      }
+    }
+  }
+  removeActorByIndex(i) {
+    if(this.actors[i].type == 'ship') this.players -= 1;
+    this.actors.splice(i, 1);
   }
 
   get isFull() {

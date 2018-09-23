@@ -12,6 +12,11 @@ function makeSlug(min, max){
 	return t;
 }
 
-try {
-	exports.makeSlug = makeSlug;
-} catch (ReferenceError) {}
+function getIndexOfActorById(id, arr) {
+	for(let i in arr) {
+		if(arr[i].id == id) {
+			return i;
+		}
+	}
+	return -1;
+}

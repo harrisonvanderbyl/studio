@@ -16,6 +16,7 @@ $(function() {
     let roomNum = url.searchParams.get("room") || -1;
     
     function setup() {
+        console.log("my player id is: ",mid);
         socket.emit("enter lobby", roomNum, mid);
 
         socket.on("fatalerror", function(err) {
@@ -32,7 +33,6 @@ $(function() {
     
         socket.on("new game", function(data) {
             console.log("connection made to a new game!");
-            console.log(data);
             
             roomNum = data.seaid;
             sea.importState(data.sea);
@@ -42,16 +42,20 @@ $(function() {
 
         socket.on("heartbeat", function(data) {
             sea.importState(data);
-            console.log(sea.actors[0].ang);
+            if(sea.getActorById(mid).keys.left) console.log("you are holding left!");
         })
+
+        function onKeyEv(e, tf) {
+            let player = sea.getActorById(mid);
+            sea.keyBuffers[mid] = player.retKey(e.keyCode, false);
+            socket.emit((tf ? 'keydown' : 'keyup'), roomNum, mid, e.keyCode)
+        }
         
         document.addEventListener('keydown', function(e) {
-            sea.keyBuffers[mid] = player.retKey(e.keyCode, true);
-            socket.emit('keyup', roomNum, mid, e.keyCode)
+            onKeyEv(e, true);
         });
         document.addEventListener('keyup', function(e) {
-            sea.keyBuffers[mid] = player.retKey(e.keyCode, false);
-            socket.emit('keyup', roomNum, mid, e.keyCode)
+            onKeyEv(e, false);
         });
     } setup();
     
@@ -61,12 +65,12 @@ $(function() {
             
             if(player) {
                 playerMissingBuffer = 0;
-                player.update();
-                player.draw();
+                sea.update();
+                sea.draw(ctx, mid);
             } else {
                 playerMissingBuffer += 1;
-                if(playerMissingBuffer >= 20) {
-                    alert("Couldn't find your player, 20 times in a row. Please refresh your browser, you probably just timed out!");
+                if(playerMissingBuffer >= 10) {
+                    alert("Couldn't find your player, 10 times in a row. Please refresh your browser, you probably just timed out!");
                     GAME_IS_READY = false;
                 }
             }
