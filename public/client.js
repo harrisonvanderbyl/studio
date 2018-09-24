@@ -7,8 +7,7 @@ $(function() {
     cnv.setAttribute("width", 500);
     cnv.setAttribute("height", 500);
 
-    let cnvBCR = cnv.getBoundingClientRect();
-    let screenDims = new Victor(cnvBCR.width, cnvBCR.height);
+    let screenDims = new Victor(cnv.width, cnv.height);
     console.log('screeDims', screenDims);
     
     let GAME_IS_READY = false;
@@ -49,7 +48,6 @@ $(function() {
 
         socket.on("heartbeat", function(data) {
             sea.importState(data);
-            if(sea.getActorById(mid).keys.left) console.log("you are holding left!");
         })
 
         function onKeyEv(e, tf) {
@@ -88,7 +86,12 @@ $(function() {
         if(GAME_IS_READY) {
             let player = sea.getActorById(mid);
             let cam = createCamera(player.pos.clone(), screenDims.clone(), sea.size.clone());
+            ctx.fillStyle = "#4477ff";
+            ctx.fillRect(0, 0, cnv.width, cnv.height);
+            drawScopes(cnv, ctx);
+            ctx.translate(-cam.x, -cam.y);
             sea.draw(ctx, cam);
+            ctx.restore();
         }
     } let drawFunc = setInterval(draw, Math.floor(1000 / opts.FPS));
 });

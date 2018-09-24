@@ -20,7 +20,7 @@ class Actor {
       this.vel = Math.min(this.vel, this.velCap);
       this.vel *= (1-this.friction);
 
-      let force = new Victor(0, 1).rotate(this.ang); // this still uses p5, please use victor.js
+      let force = new Victor(0, 1).rotate(this.ang);
       force.multiply(new Victor(this.vel, this.vel));
 
       this.pos.add(force);
@@ -39,8 +39,8 @@ class Actor {
     if(this.image[0] == "#") {
       //TODO rectangle rendering
       ctx.fillStyle = this.image;
-      let drawPos = new Victor(this.pos.x - this.size.x - cam.x, this.pos.y - this.size.y - cam.y);
-      ctx.fillRect(drawPos.x, drawPos.y, drawPos.x + this.size.x, drawPos.y + this.size.y);
+      let drawPos = new Victor(this.pos.x - (this.size.x/2), this.pos.y - (this.size.y/2));
+      ctx.fillRect(drawPos.x, drawPos.y, this.size.x, this.size.y);
     } else {
       //TODO sprite rendering
     }
