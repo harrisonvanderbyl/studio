@@ -32,8 +32,18 @@ $(function() {
 
         socket.on('pongoid', function(msg) {
             let latency = Date.now() - msg;
+            let player = sea.getActorById(mid);
+
             $("#ping-holder").text("Ping: " + latency);
-            setTimeout(function() {socket.emit('pingoid', Date.now(), mid);}, 1000);
+            
+            if(player) {
+                $("#ship-posx").text(Math.floor(player.pos.x*100)/100);
+                $("#ship-posy").text(Math.floor(player.pos.y*100)/100);
+                $("#ship-ang").text(Math.floor(player.ang*100)/100);
+                $("#ship-vel").text(Math.floor(player.vel*100)/100);
+            }
+
+            setTimeout(function() {socket.emit('pingoid', Date.now(), mid);}, 500);
         });
         socket.emit('pingoid', Date.now(), mid);
     
@@ -91,7 +101,7 @@ $(function() {
             drawScopes(cnv, ctx);
             ctx.translate(-cam.x, -cam.y);
             sea.draw(ctx, cam);
-            ctx.restore();
+            ctx.translate(cam.x, cam.y);
         }
     } let drawFunc = setInterval(draw, Math.floor(1000 / opts.FPS));
 });

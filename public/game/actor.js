@@ -6,7 +6,7 @@ class Actor {
     this.size = size;
     this.vel = vel;
     this.ang = ang;
-    this.friction = 0.004;
+    this.friction = 0.01;
     this.image = image;
     this.frameRate = -1;
     this.mode = mode;
@@ -27,12 +27,16 @@ class Actor {
     }
   }
   
-  turn(dir=-1) { // -1 for left, +1 for right.
+  turn(dir) { // -1 for left, +1 for right.
     this.ang += dir * this.turnSpeed;
   }
 
   boost() { // accelerates the ships velocity.
-    this.vel += this.accel;
+    this.vel += (this.accel / Math.max(this.vel,1));
+  }
+
+  break() {
+    this.vel 
   }
   
   draw(ctx, cam) {
