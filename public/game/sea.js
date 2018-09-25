@@ -85,9 +85,9 @@ class Sea {
 	}
 
 	draw(ctx, cam, cnv) {
-		ctx.fillStyle = "#ff60ff";
-		for (let i = 0; i < this.size.x; i += 100)
-			for (let j = 0; j < this.size.y; j += 100) {
+		ctx.fillStyle = "#60ff60";
+		for (let i = 0; i <= this.size.x; i += 100)
+			for (let j = 0; j <= this.size.y; j += 100) {
 				ctx.fillRect(i - 2, j - 2, 4, 4);
 			}
 

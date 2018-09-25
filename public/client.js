@@ -104,9 +104,9 @@ $(function() {
 			let player = sea.getActorById(mid);
 			let cam = createCamera(player.pos.clone(), screenDims.clone(), sea.size.clone());
 
-			ctx.fillStyle = "rgba(150, 150, 250, 0.35)";
+			ctx.fillStyle = "#112233";
 			ctx.fillRect(0, 0, cnv.width, cnv.height);
-			drawScopes(cnv, ctx, 4);
+			//drawScopes(cnv, ctx, 4);
 			ctx.translate(-cam.x, -cam.y);
 			sea.draw(ctx, cam);
 			ctx.translate(cam.x, cam.y);
