@@ -1,5 +1,5 @@
-function makeSlug(min, max){
-	var t = '';
+function makeSlug(min, max) {
+	var t = "";
 	for (var i = 0; i < min + Math.floor(Math.random() * (max - min)); i++) {
 		var base = 65 + Math.random() * 25;
 		if (Math.random() < 0.4) {
@@ -13,8 +13,8 @@ function makeSlug(min, max){
 }
 
 function getIndexOfActorById(id, arr) {
-	for(let i in arr) {
-		if(arr[i].id == id) {
+	for (let i in arr) {
+		if (arr[i].id == id) {
 			return i;
 		}
 	}
@@ -36,31 +36,31 @@ function createCamera(playerPos, screenDims, seaDims) {
 }
 
 function toRad(deg) {
-	return deg * Math.PI / 180;
+	return (deg * Math.PI) / 180;
 }
 
 function toDeg(rad) {
-	return rad / Math.PI * 180;
+	return (rad / Math.PI) * 180;
 }
 
-function drawScopes(cnv, ctx, lines=8) {
+function drawScopes(cnv, ctx, lines = 8) {
 	ctx.beginPath();
-	for(let i = 0; i < cnv.width; i += cnv.width / lines) {
+	for (let i = 0; i < cnv.width; i += cnv.width / lines) {
 		drawScopeLine(i, 0, 0, cnv.height, cnv.width, ctx);
 	}
-	for(let i = 0; i < cnv.height; i += cnv.height / lines) {
+	for (let i = 0; i < cnv.height; i += cnv.height / lines) {
 		drawScopeLine(0, i, cnv.width, 0, cnv.height, ctx);
 	}
 	ctx.closePath();
 }
 
 function drawScopeLine(a1, b1, a2, b2, check, ctx) {
-	ctx.strokeStyle = "#006600"
+	ctx.strokeStyle = "#006600";
 	ctx.lineWidth = 1;
-	if(a1 % (check / 4) == 0 || b1 % (check / 4)) ctx.lineWidth = 2;
-	if(a1 % (check / 2) == 0 || b1 % (check / 2)) ctx.lineWidth = 3; 
+	if (a1 % (check / 4) == 0 || b1 % (check / 4)) ctx.lineWidth = 2;
+	if (a1 % (check / 2) == 0 || b1 % (check / 2)) ctx.lineWidth = 3;
 
 	ctx.moveTo(a1, b1);
-	ctx.lineTo(a1+a2, b1+b2);
+	ctx.lineTo(a1 + a2, b1 + b2);
 	ctx.stroke();
 }

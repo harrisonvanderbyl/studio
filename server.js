@@ -1,112 +1,119 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
 
-require('dotenv').config();
+require("dotenv").config();
 
-const Victor = require('victor');
-const gm = require('./build/out.js');
+const Victor = require("victor");
+const gm = require("./build/out.js");
 
-const SEAS_LIMIT=gm.opts.SEAS_LIMIT;
-const FPS=gm.opts.FPS;
-const TICKFREQ=Math.floor(1000 / FPS);
+const SEAS_LIMIT = gm.opts.SEAS_LIMIT;
+const FPS = gm.opts.FPS;
+const TICKFREQ = Math.floor(1000 / FPS);
 
 let seas = [];
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+app.get("/", function(req, res) {
+	res.sendFile(__dirname + "/views/index.html");
 });
 
 let lastPings = {};
 let playersSeas = {};
 
 function removePlayer(pid) {
-  let tsea = seas[playersSeas[pid]];
-  if(tsea) {
-    tsea.removeActorById(pid);
-  }
-  delete playersSeas[pid];
-  delete lastPings[pid];
+	let tsea = seas[playersSeas[pid]];
+	if (tsea) {
+		tsea.removeActorById(pid);
+	}
+	delete playersSeas[pid];
+	delete lastPings[pid];
 }
 
 function checkPings() {
-  for(let pid in lastPings) {
-    let latency = Date.now() - lastPings[pid];
-    if(latency > gm.opts.MAX_PING) {
-      console.log("kicking player: ", pid);
-      removePlayer(pid);
-    }
-  }
+	for (let pid in lastPings) {
+		let latency = Date.now() - lastPings[pid];
+		if (latency > gm.opts.MAX_PING) {
+			console.log("kicking player: ", pid);
+			removePlayer(pid);
+		}
+	}
 }
 setInterval(checkPings, 500);
 
 function keyProc(tf, socket, room, pid, key) {
-  if(seas[room]) {
-    let keyBuf = seas[room].getActorById(pid).retKey(key, tf);
-    seas[room].keyBuffers[pid] = keyBuf;
-  } else {
-    socket.emit("fatalerror", "Your sea couldnt be found. Please refresh the browser, and try again.")
-  }
+	if (seas[room]) {
+		let keyBuf = seas[room].getActorById(pid).retKey(key, tf);
+		seas[room].keyBuffers[pid] = keyBuf;
+	} else {
+		socket.emit(
+			"fatalerror",
+			"Your sea couldnt be found. Please refresh the browser, and try again."
+		);
+	}
 }
 
-io.on('connection', function(socket) {
-  
-  socket.on('pingoid', function(msg, pid) {
-    lastPings[pid] = Date.now();
-    socket.emit('pongoid', msg);
-  });
-  
-  socket.on('keydown', function(room, pid, key) {
-    //console.log("keydown in room:", room, " player:", pid, " key:", key);
-    keyProc(true, socket, room, pid, key);
-  });
-  
-  socket.on('keyup', function(room, pid, key) {
-    //console.log("keyup in room:", room, " player:", pid, " key:", key);
-    keyProc(false, socket, room, pid, key);
-  });
-  
-  socket.on('enter lobby', function(seaid, pid) {
-    if(seaid >= SEAS_LIMIT) return socket.emit('fatalerror', "No lobby found.\nPlease refresh the browser, and try again.");
-    if(seaid == -1) {
-      do {
-        seaid += 1;
-      } while(seas[seaid] && seas[seaid].isFull);
-    }
-    if(!seas[seaid]) {
-      seas[seaid] = new gm.Sea(seaid, gm.opts.SEA_SIZE);
-      setInterval(updateSea, TICKFREQ, seaid);
-      console.log("created new sea: " + seaid + " tickfreq: " + TICKFREQ);
-    }
-    playersSeas[pid] = seaid;
-    socket.join('sea-'+seaid);
+io.on("connection", function(socket) {
+	socket.on("pingoid", function(msg, pid) {
+		lastPings[pid] = Date.now();
+		socket.emit("pongoid", msg);
+	});
 
-    let tpos = new Victor(0, 0).randomize(new Victor(0, 0), seas[seaid].size);
-    let pship = new gm.Ship(pid, tpos);
-    console.log(pship.id);
-    seas[seaid].actors.push(pship);
+	socket.on("keydown", function(room, pid, key) {
+		//console.log("keydown in room:", room, " player:", pid, " key:", key);
+		keyProc(true, socket, room, pid, key);
+	});
 
-    let toClient = {
-      sea: seas[seaid].exportState(),
-      seaid: seaid
-    }
+	socket.on("keyup", function(room, pid, key) {
+		//console.log("keyup in room:", room, " player:", pid, " key:", key);
+		keyProc(false, socket, room, pid, key);
+	});
 
-    socket.emit('new game', toClient);
-  });
+	socket.on("enter lobby", function(seaid, pid) {
+		if (seaid >= SEAS_LIMIT)
+			return socket.emit(
+				"fatalerror",
+				"No lobby found.\nPlease refresh the browser, and try again."
+			);
+		if (seaid == -1) {
+			do {
+				seaid += 1;
+			} while (seas[seaid] && seas[seaid].isFull);
+		}
+		if (!seas[seaid]) {
+			seas[seaid] = new gm.Sea(seaid, gm.opts.SEA_SIZE);
+			setInterval(updateSea, TICKFREQ, seaid);
+			console.log("created new sea: " + seaid + " tickfreq: " + TICKFREQ);
+		}
+		playersSeas[pid] = seaid;
+		socket.join("sea-" + seaid);
+
+		let tpos = new Victor(0, 0).randomize(new Victor(0, 0), seas[seaid].size);
+		let pship = new gm.Ship(pid, tpos);
+		console.log(pship.id);
+		seas[seaid].actors.push(pship);
+
+		let toClient = {
+			sea: seas[seaid].exportState(),
+			seaid: seaid
+		};
+
+		socket.emit("new game", toClient);
+	});
 });
 
-function updateSea(seaid) { // todo: make this actually multithreaded. (if we want to use experimental builds of nodejs lol) 
-// todo: remove these dumb todo's
-  let sea = seas[seaid];
-  sea.update();
+function updateSea(seaid) {
+	// todo: make this actually multithreaded. (if we want to use experimental builds of nodejs lol)
+	// todo: remove these dumb todo's
+	let sea = seas[seaid];
+	sea.update();
 
-  let state = sea.exportState();
-  io.to('sea-'+seaid).emit('heartbeat', state);
+	let state = sea.exportState();
+	io.to("sea-" + seaid).emit("heartbeat", state);
 }
 
-http.listen(process.env.PORT, function(){
-  console.log('listening on *:'+process.env.PORT);
+http.listen(process.env.PORT, function() {
+	console.log("listening on *:" + process.env.PORT);
 });

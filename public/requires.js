@@ -1,1 +1,1 @@
-let Victor = require('victor');
+let Victor = require("victor");
