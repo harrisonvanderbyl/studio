@@ -97,7 +97,7 @@ $(function() {
 			//console.log(player.keys);
 		}
 	}
-	let tickFunc = setInterval(tick, Math.floor(1000 / opts.FPS));
+	let tickFunc = setInterval(tick, Math.floor(1000 / (opts.FPS))); 
 
 	function draw() {
 		if (GAME_IS_READY) {

@@ -6,13 +6,14 @@ class Ship extends Actor {
 		size = new Victor(30, 30),
 		vel = 0.5,
 		ang = 0,
-		accel = 1.2,
-		velCap = 5,
-		turnSpeed = 0.2,
-		brakeSpeed = 0.1,
+		accel = 1.4,
+		velCap = 8,
+		turnSpeed = 0.25,
+		brakeSpeed = 0.125,
+		obeysBoundarys = true,
 		image = "#6600ff"
 	) {
-		super(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, image);
+		super(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, image);
 		this.type = "ship";
 		this.keys = { left: false, right: false, forward: false, backward: false};
 	}
@@ -54,7 +55,7 @@ class Ship extends Actor {
 		return tkeys;
 	}
 
-	update() {
+	update(sea) {
 		//stub
 		if (this.keys.left) super.turn(-1);
 		if (this.keys.right) super.turn(+1);
@@ -62,7 +63,7 @@ class Ship extends Actor {
 		if (this.keys.forward) super.boost();
 		if (this.keys.backward) super.brake();
 
-		super.update();
+		super.update(sea);
 	}
 
 	draw(ctx, cam) {

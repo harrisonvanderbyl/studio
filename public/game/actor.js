@@ -1,6 +1,6 @@
 /* global Victor */
 class Actor {
-	constructor(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, image, mode = "client") {
+	constructor(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, image, mode = "client") {
 		this.id = id;
 		this.pos = pos;
 		this.size = size;
@@ -14,23 +14,54 @@ class Actor {
 		this.velCap = velCap;
 		this.turnSpeed = turnSpeed;
 		this.brakeSpeed = brakeSpeed;
+		this.obeysBoundarys = obeysBoundarys;
+		this.turnResistance = 0;
 	}
 
-	update() {
+	update(sea) {
+		this.ang = correctAng(this.ang);
 		if (this.vel > 0.1) {
 			this.vel = Math.min(this.vel, this.velCap);
 			this.vel *= 1 - this.friction;
 
-			let force = new Victor(0, 1).rotate(this.ang);
-			force.multiply(new Victor(this.vel, this.vel));
+			this.pos.add(this.force);
+			
+			if(this.obeysBoundarys) this.bounceAway(new Victor(0,0), sea.size);
 
-			this.pos.add(force);
+			this.turnResistance = 0;
+		}
+	}
+
+	get force() {
+		let force = new Victor(0, 1).rotate(this.ang);
+		force.multiply(new Victor(this.vel, this.vel));
+		return force;
+	}
+
+	bounceAway(topLeft, botRight) {
+		if(!vecIsInRange(this.pos.clone().add(this.force), topLeft, botRight)) {
+			let shouldTurn = false;
+			let turnDir = 1;
+			this.ang = correctAng(this.ang);
+			if(this.pos.x > botRight.x) if(Math.abs(this.ang - (Math.PI * .5)) > .1) {
+				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, Math.PI * .5);}
+			if(this.pos.y > botRight.y) if(Math.abs(this.ang - Math.PI) > .1) {
+				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, Math.PI);}
+			if(this.pos.x <  topLeft.x) if(Math.abs(Math.abs(this.ang) - (-Math.PI * .5)) > .1) {
+				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, Math.PI * -.5);}
+			if(this.pos.y <  topLeft.y) if(Math.abs(this.ang - 0) > .1) {
+				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, 0);}
+
+			if(shouldTurn) {
+				this.turnResistance = this.turnSpeed / 2;
+				this.ang += this.turnSpeed * turnDir;
+			}
 		}
 	}
 
 	turn(dir) {
 		// -1 for left, +1 for right.
-		this.ang += dir * (this.turnSpeed / ((this.vel + 6) / 4));
+		this.ang += dir * ((this.turnSpeed-this.turnResistance) / ((this.vel + 6) / 4));
 	}
 
 	boost() {

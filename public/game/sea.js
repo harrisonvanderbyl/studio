@@ -80,7 +80,7 @@ class Sea {
 		}
 
 		for (let i in this.actors) {
-			this.actors[i].update();
+			this.actors[i].update(this);
 		}
 	}
 
