@@ -1,7 +1,8 @@
 /* global Victor */
 class Actor {
-	constructor(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, image, mode = "client") {
+	constructor(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, type, image, mode = "client") {
 		this.id = id;
+		this.type = type;
 		this.pos = pos;
 		this.size = size;
 		this.vel = vel;
@@ -16,6 +17,28 @@ class Actor {
 		this.brakeSpeed = brakeSpeed;
 		this.obeysBoundarys = obeysBoundarys;
 		this.turnResistance = 0;
+	}
+
+	exportState() {
+		let state = {
+			pos: this.pos.toObject(),
+			size: this.size.toObject(),
+			ang: this.ang,
+			vel: this.vel,
+			id: this.id,
+			type: this.type
+		};
+
+		return state;
+	}
+	
+	importState(state) {
+		this.pos = Victor.fromObject(state.pos);
+		this.size = Victor.fromObject(state.size);
+		this.ang = state.ang;
+		this.vel = state.vel;
+		this.id = state.id;
+		this.type = state.type;
 	}
 
 	update(sea) {
@@ -33,7 +56,7 @@ class Actor {
 	}
 
 	get force() {
-		let force = new Victor(0, 1).rotate(this.ang);
+		let force = new Victor(1, 0).rotate(this.ang);
 		force.multiply(new Victor(this.vel, this.vel));
 		return force;
 	}
@@ -56,6 +79,7 @@ class Actor {
 				this.turnResistance = this.turnSpeed / 2;
 				this.ang += this.turnSpeed * turnDir;
 			}
+			this.vel += 0.1;//stop people completely stopping outside of boundaries
 		}
 	}
 

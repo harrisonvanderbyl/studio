@@ -34,8 +34,8 @@ function vecIsInRange(vec, topLeft, botRight) {
 }
 
 function correctAng(ang) {
-	if (ang > Math.PI) ang = -Math.PI + ang % Math.PI;
-	if (ang < -Math.PI) ang = Math.PI - ang % Math.PI;
+	while(ang > Math.PI) ang -= Math.PI*2;
+	while(ang < -Math.PI) ang += Math.PI*2;
 	return ang;
 }
 

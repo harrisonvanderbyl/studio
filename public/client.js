@@ -35,7 +35,7 @@ $(function() {
 			let latency = Date.now() - msg;
 			let player = sea.getActorById(mid);
 
-			$("#game-ping").text("Ping: " + latency);
+			$("#game-ping").text(latency);
 
 			if (player) {
 				$("#ship-posx").text(Math.floor(player.pos.x * 100) / 100);

@@ -11,35 +11,38 @@ class Ship extends Actor {
 		turnSpeed = 0.25,
 		brakeSpeed = 0.125,
 		obeysBoundarys = true,
+		bulletSpeed = 2.1,
 		image = "#6600ff"
 	) {
-		super(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, image);
-		this.type = "ship";
+		super(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, "ship", image);
 		this.keys = { left: false, right: false, forward: false, backward: false};
+		this.bulletSpeed = bulletSpeed;
+		this.bullets = [];
+	}
+
+	get headVector() {
+		return this.pos.clone().add(this.force.multiply(new Victor(3, 3)));
+	}
+
+	getBullets() {
+		let bpos = this.headVector;
+
+		//TODO: support for spread bullets, etc.
+
+		return bullets;
 	}
 
 	exportState() {
-		let state = {
-			pos: this.pos.toObject(),
-			size: this.size.toObject(),
-			ang: this.ang,
-			vel: this.vel,
-			keys: this.keys,
-			id: this.id,
-			type: this.type
-		};
-
+		let state = super.exportState();
+		state.keys = this.keys;
+		state.health = this.health;
 		return state;
 	}
 
 	importState(state) {
-		this.pos = Victor.fromObject(state.pos);
-		this.size = Victor.fromObject(state.size);
-		this.ang = state.ang;
-		this.vel = state.vel;
+		super.importState(state);
+		this.health = state.health;
 		this.keys = state.keys;
-		this.id = state.id;
-		this.type = state.type;
 	}
 
 	setKey(e, tf = true) {
