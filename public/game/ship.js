@@ -3,6 +3,7 @@ class Ship extends Actor {
 	constructor(
 		id,
 		pos = new Victor(10, 10),
+		mode = "client",
 		size = new Victor(30, 30),
 		vel = 0.5,
 		ang = 0,
@@ -12,9 +13,9 @@ class Ship extends Actor {
 		brakeSpeed = 0.125,
 		obeysBoundarys = true,
 		bulletSpeed = 2.1,
-		image = "#6600ff"
+		image = "https://melbournechapter.net/images/yacht-clipart-barge-4.png"
 	) {
-		super(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, "ship", image);
+		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, "ship", image);
 		this.keys = { left: false, right: false, forward: false, backward: false};
 		this.bulletSpeed = bulletSpeed;
 		this.bullets = [];

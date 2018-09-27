@@ -1,6 +1,6 @@
 /* global Victor */
 class Actor {
-	constructor(id, pos, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, type, image, mode = "client") {
+	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, type, image) {
 		this.id = id;
 		this.type = type;
 		this.pos = pos;
@@ -17,6 +17,12 @@ class Actor {
 		this.brakeSpeed = brakeSpeed;
 		this.obeysBoundarys = obeysBoundarys;
 		this.turnResistance = 0;
+
+		if(this.mode == "client") {
+			var img = new Image();
+			if(this.image[0] != "#") img.src = this.image;
+			this.img = img;
+		}
 	}
 
 	exportState() {
@@ -99,7 +105,6 @@ class Actor {
 
 	draw(ctx, cam) {
 		if (this.image[0] == "#") {
-			//TODO rectangle rendering
 			ctx.fillStyle = this.image;
 			let centerPos = new Victor(this.pos.x, this.pos.y);
 			ctx.save();
@@ -118,7 +123,12 @@ class Actor {
 			//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
 			ctx.restore();
 		} else {
-			//TODO sprite rendering
+			let centerPos = new Victor(this.pos.x, this.pos.y);
+			ctx.save();
+			ctx.translate(centerPos.x, centerPos.y);
+			ctx.rotate(this.ang+toRad(90));
+			ctx.drawImage(this.img, -this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
+			ctx.restore();
 		}
 	}
 }
