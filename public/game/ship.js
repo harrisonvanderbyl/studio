@@ -13,7 +13,7 @@ class Ship extends Actor {
 		brakeSpeed = 0.125,
 		obeysBoundarys = true,
 		bulletSpeed = 2.1,
-		image = "https://melbournechapter.net/images/yacht-clipart-barge-4.png"
+		image = "#110011"
 	) {
 		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, "ship", image);
 		this.keys = { left: false, right: false, forward: false, backward: false};
@@ -61,7 +61,7 @@ class Ship extends Actor {
 
 	update(sea) {
 		super.update(sea);
-		
+
 		if (this.keys.left) super.turn(-1);
 		if (this.keys.right) super.turn(+1);
 

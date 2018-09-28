@@ -84,7 +84,7 @@ class Actor {
 
 			if(shouldTurn) {
 				this.turnResistance = 4;
-				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP * 1.5;
+				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP;
 			}
 			this.vel += 0.1*opts.TIMESTEP;//stop people completely stopping outside of boundaries
 		}
