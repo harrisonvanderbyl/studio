@@ -60,14 +60,15 @@ class Ship extends Actor {
 	}
 
 	update(sea) {
-		//stub
+		super.update(sea);
+		
 		if (this.keys.left) super.turn(-1);
 		if (this.keys.right) super.turn(+1);
 
 		if (this.keys.forward) super.boost();
 		if (this.keys.backward) super.brake();
 
-		super.update(sea);
+		super.post_update(sea);
 	}
 
 	draw(ctx, cam) {

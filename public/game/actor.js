@@ -12,7 +12,7 @@ class Actor {
 		this.frameRate = -1;
 		this.mode = mode;
 		this.accel = accel * opts.TIMESTEP;
-		this.velCap = velCap * 2;
+		this.velCap = velCap * opts.TIMESTEP;
 		this.turnSpeed = turnSpeed;
 		this.brakeSpeed = brakeSpeed * opts.TIMESTEP;
 		this.obeysBoundarys = obeysBoundarys;
@@ -52,13 +52,14 @@ class Actor {
 		if (this.vel > 0.1) {
 			this.vel = Math.min(this.vel, this.velCap);
 			this.vel *= 1 - this.friction;
-
+			if(this.turnResistance > 1) console.log(this.turnResistance);
 			this.pos.add(this.force);
 			
 			if(this.obeysBoundarys) this.bounceAway(new Victor(0,0), sea.size);
-
-			this.turnResistance = 0;
 		}
+	}
+	post_update(sea) {
+		this.turnResistance = 0;
 	}
 
 	get force() {
@@ -82,8 +83,8 @@ class Actor {
 				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, 0);}
 
 			if(shouldTurn) {
-				this.turnResistance = this.turnSpeed / 2;
-				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP;
+				this.turnResistance = 4;
+				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP * 1.5;
 			}
 			this.vel += 0.1*opts.TIMESTEP;//stop people completely stopping outside of boundaries
 		}
@@ -91,7 +92,7 @@ class Actor {
 
 	turn(dir) {
 		// -1 for left, +1 for right.
-		this.ang += dir * (this.turnSpeed-this.turnResistance);
+		this.ang += dir * (this.turnSpeed/Math.max(this.turnResistance,1));
 	}
 
 	boost() {
