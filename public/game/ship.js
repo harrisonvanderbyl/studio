@@ -9,7 +9,7 @@ class Ship extends Actor {
 		ang = 0,
 		accel = 1.4,
 		velCap = 8,
-		turnSpeed = 0.25,
+		turnSpeed = 0.12,
 		brakeSpeed = 0.125,
 		obeysBoundarys = true,
 		bulletSpeed = 2.1,

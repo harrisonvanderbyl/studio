@@ -5,16 +5,16 @@ class Actor {
 		this.type = type;
 		this.pos = pos;
 		this.size = size;
-		this.vel = vel;
+		this.vel = vel * opts.TIMESTEP;
 		this.ang = ang;
-		this.friction = 0.01;
+		this.friction = 0.01 * opts.TIMESTEP;
 		this.image = image;
 		this.frameRate = -1;
 		this.mode = mode;
-		this.accel = accel;
-		this.velCap = velCap;
+		this.accel = accel * opts.TIMESTEP;
+		this.velCap = velCap * 2;
 		this.turnSpeed = turnSpeed;
-		this.brakeSpeed = brakeSpeed;
+		this.brakeSpeed = brakeSpeed * opts.TIMESTEP;
 		this.obeysBoundarys = obeysBoundarys;
 		this.turnResistance = 0;
 
@@ -83,15 +83,15 @@ class Actor {
 
 			if(shouldTurn) {
 				this.turnResistance = this.turnSpeed / 2;
-				this.ang += this.turnSpeed * turnDir;
+				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP;
 			}
-			this.vel += 0.1;//stop people completely stopping outside of boundaries
+			this.vel += 0.1*opts.TIMESTEP;//stop people completely stopping outside of boundaries
 		}
 	}
 
 	turn(dir) {
 		// -1 for left, +1 for right.
-		this.ang += dir * ((this.turnSpeed-this.turnResistance) / ((this.vel + 6) / 4));
+		this.ang += dir * (this.turnSpeed-this.turnResistance);
 	}
 
 	boost() {
