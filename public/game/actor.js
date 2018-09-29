@@ -1,15 +1,50 @@
-/* global Victor */
-class Actor {
-	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed,
-				brakeSpeed, attraction, obeysBoundarys, type, image) {
-		this.id = id;
-		this.type = type;
+/* global Victor opts */
+class SimpleActor{
+	constructor(image,pos,ang,size){
+		
+		this.image = image;
+		this.ang = ang;
 		this.pos = pos;
 		this.size = size;
+	}
+	draw(ctx,cam){
+		
+			if (this.image[0] == "#") {
+			ctx.fillStyle = this.image;
+			let centerPos = new Victor(this.pos.x, this.pos.y);
+			ctx.save();
+			ctx.translate(centerPos.x, centerPos.y);
+			ctx.rotate(this.ang);
+			ctx.lineWidth = 4;
+			ctx.strokeStyle = "#cecefe";
+			ctx.beginPath();
+			ctx.moveTo(0, this.size.y / 2);
+			ctx.lineTo(this.size.x / 2, -this.size.y / 2);
+			ctx.lineTo(0, -this.size.y / 3);
+			ctx.lineTo(-this.size.x / 2, -this.size.y / 2);
+			ctx.lineTo(0, this.size.y / 2);
+			ctx.closePath();
+			ctx.stroke();
+			//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
+			ctx.restore();
+		} else {
+			let centerPos = new Victor(this.pos.x, this.pos.y);
+			ctx.save();
+			ctx.translate(centerPos.x, centerPos.y);
+			ctx.rotate(this.ang+toRad(90));
+			ctx.drawImage(this.img, -this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
+			ctx.restore();
+		}
+	}
+}
+
+class Actor extends SimpleActor{
+	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, attraction, obeysBoundarys, type, image) {
+		super(image,pos,ang,size);
+		this.id = id;
+		this.type = type;
 		this.vel = vel * opts.TIMESTEP;
-		this.ang = ang;
 		this.friction = 0.01 * opts.TIMESTEP;
-		this.image = image;
 		this.frameRate = -1;
 		this.mode = mode;
 		this.accel = accel * opts.TIMESTEP;
@@ -65,7 +100,7 @@ class Actor {
 		extraTurn = Math.abs(extraTurn) / Math.max(this.turnResistance, 1);
 
 		this.ang += this.makeTurn(this.attraction.angle() - Math.PI / 2, 0.05, 
-								  this.attraction.length()) * (this.turnSpeed/15) * (extraTurn+2);
+								  this.attraction.length()) * (this.turnSpeed/24) * (extraTurn+2);
 		
 		this.pos.add(this.attraction);
 		
@@ -75,7 +110,7 @@ class Actor {
 	}
 	post_update(sea) {
 		this.turnResistance = 0;
-		this.attraction = new Victor(2,1);
+		this.attraction = new Victor(0, 0);
 	}
 
 	get force() {
@@ -127,31 +162,6 @@ class Actor {
 	}
 
 	draw(ctx, cam) {
-		if (this.image[0] == "#") {
-			ctx.fillStyle = this.image;
-			let centerPos = new Victor(this.pos.x, this.pos.y);
-			ctx.save();
-			ctx.translate(centerPos.x, centerPos.y);
-			ctx.rotate(this.ang);
-			ctx.lineWidth = 4;
-			ctx.strokeStyle = "#cecefe";
-			ctx.beginPath();
-			ctx.moveTo(0, this.size.y / 2);
-			ctx.lineTo(this.size.x / 2, -this.size.y / 2);
-			ctx.lineTo(0, -this.size.y / 3);
-			ctx.lineTo(-this.size.x / 2, -this.size.y / 2);
-			ctx.lineTo(0, this.size.y / 2);
-			ctx.closePath();
-			ctx.stroke();
-			//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
-			ctx.restore();
-		} else {
-			let centerPos = new Victor(this.pos.x, this.pos.y);
-			ctx.save();
-			ctx.translate(centerPos.x, centerPos.y);
-			ctx.rotate(this.ang+toRad(90));
-			ctx.drawImage(this.img, -this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
-			ctx.restore();
-		}
+		super.draw(ctx,cam);
 	}
 }

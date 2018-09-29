@@ -11,7 +11,7 @@ class Ship extends Actor {
 		velCap = 7,
 		turnSpeed = 0.12,
 		brakeSpeed = 0.125,
-		attraction = new Victor(2, 1),
+		attraction = new Victor(0, 0),
 		obeysBoundarys = true,
 		bulletSpeed = 2.1,
 		image = "#110011"
