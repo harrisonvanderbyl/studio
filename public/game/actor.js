@@ -1,6 +1,7 @@
 /* global Victor */
 class Actor {
-	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, type, image) {
+	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed,
+				brakeSpeed, attraction, obeysBoundarys, type, image) {
 		this.id = id;
 		this.type = type;
 		this.pos = pos;
@@ -17,6 +18,7 @@ class Actor {
 		this.brakeSpeed = brakeSpeed * opts.TIMESTEP;
 		this.obeysBoundarys = obeysBoundarys;
 		this.turnResistance = 0;
+		this.attraction = attraction;
 
 		if(this.mode == "client") {
 			var img = new Image();
@@ -32,7 +34,8 @@ class Actor {
 			ang: this.ang,
 			vel: this.vel,
 			id: this.id,
-			type: this.type
+			type: this.type,
+			attraction: this.attraction
 		};
 
 		return state;
@@ -45,21 +48,34 @@ class Actor {
 		this.vel = state.vel;
 		this.id = state.id;
 		this.type = state.type;
+		this.attraction = Victor.fromObject(state.attraction);
 	}
 
 	update(sea) {
+
 		this.ang = correctAng(this.ang);
 		if (this.vel > 0.1) {
 			this.vel = Math.min(this.vel, this.velCap);
 			this.vel *= 1 - this.friction;
 			if(this.turnResistance > 1) console.log(this.turnResistance);
+		}
+		if(this.obeysBoundarys) this.bounceAway(new Victor(0,0), sea.size);
+
+		let extraTurn = this.force.clone().normalize().dot(this.attraction.clone().rotateBy(Math.PI / 2));
+		extraTurn = Math.abs(extraTurn) / Math.max(this.turnResistance, 1);
+
+		this.ang += this.makeTurn(this.attraction.angle() - Math.PI / 2, 0.05, 
+								  this.attraction.length()) * (this.turnSpeed/15) * (extraTurn+2);
+		
+		this.pos.add(this.attraction);
+		
+		if(this.vel > 0.1) {
 			this.pos.add(this.force);
-			
-			if(this.obeysBoundarys) this.bounceAway(new Victor(0,0), sea.size);
 		}
 	}
 	post_update(sea) {
 		this.turnResistance = 0;
+		this.attraction = new Victor(2,1);
 	}
 
 	get force() {
@@ -68,25 +84,31 @@ class Actor {
 		return force;
 	}
 
+	makeTurn(tang, deadzone=0.1, mag=1) {
+		let turnDir = 0;
+		if(Math.abs(this.ang - tang) > deadzone) {
+			turnDir = closestTurnDirFromAngs(this.ang, tang);
+		}
+		return turnDir * mag;
+	}
+
 	bounceAway(topLeft, botRight) {
 		if(!vecIsInRange(this.pos.clone().add(this.force), topLeft, botRight)) {
-			let shouldTurn = false;
-			let turnDir = 1;
+			let turnDir = 0;
 			this.ang = correctAng(this.ang);
-			if(this.pos.x > botRight.x) if(Math.abs(this.ang - (Math.PI * .5)) > .1) {
-				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, Math.PI * .5);}
-			if(this.pos.y > botRight.y) if(Math.abs(this.ang - Math.PI) > .1) {
-				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, Math.PI);}
-			if(this.pos.x <  topLeft.x) if(Math.abs(Math.abs(this.ang) - (-Math.PI * .5)) > .1) {
-				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, Math.PI * -.5);}
-			if(this.pos.y <  topLeft.y) if(Math.abs(this.ang - 0) > .1) {
-				shouldTurn = true; turnDir = closestTurnDirFromAngs(this.ang, 0);}
-
-			if(shouldTurn) {
-				this.turnResistance = 4;
+			if(this.pos.x > botRight.x) turnDir += this.makeTurn( Math.PI * .5);
+			if(this.pos.y > botRight.y) turnDir += this.makeTurn( Math.PI     );
+			if(this.pos.x <  topLeft.x) turnDir += this.makeTurn(-Math.PI * .5);
+			if(this.pos.y <  topLeft.y) turnDir += this.makeTurn( 0           );
+			if(turnDir != 0) {
+				this.turnResistance = 5;
 				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP;
+
+				let attrToCenter = this.pos.clone().subtract(botRight.clone().multiply(new Victor(0.5, 0.5))).normalize().multiply(new Victor(-1,-1));
+				//console.log(attrToCenter);
+				this.attraction.add(attrToCenter);
 			}
-			this.vel += 0.1*opts.TIMESTEP;//stop people completely stopping outside of boundaries
+			this.vel += 0.12*opts.TIMESTEP;//stop people completely stopping outside of boundaries
 		}
 	}
 

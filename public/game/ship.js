@@ -8,14 +8,16 @@ class Ship extends Actor {
 		vel = 0.5,
 		ang = 0,
 		accel = 1.4,
-		velCap = 8,
+		velCap = 7,
 		turnSpeed = 0.12,
 		brakeSpeed = 0.125,
+		attraction = new Victor(2, 1),
 		obeysBoundarys = true,
 		bulletSpeed = 2.1,
 		image = "#110011"
 	) {
-		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, "ship", image);
+		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, 
+			attraction, obeysBoundarys, "ship", image);
 		this.keys = { left: false, right: false, forward: false, backward: false};
 		this.bulletSpeed = bulletSpeed;
 		this.bullets = [];
