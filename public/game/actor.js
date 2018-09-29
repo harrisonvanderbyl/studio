@@ -106,7 +106,7 @@ class Actor {
 
 				let attrToCenter = this.pos.clone().subtract(botRight.clone().multiply(new Victor(0.5, 0.5))).normalize().multiply(new Victor(-1,-1));
 				//console.log(attrToCenter);
-				this.attraction.add(attrToCenter);
+				this.attraction.add(attrToCenter.multiply(new Victor(this.vel/2.2, this.vel/2.2)));
 			}
 			this.vel += 0.12*opts.TIMESTEP;//stop people completely stopping outside of boundaries
 		}
