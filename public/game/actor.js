@@ -7,8 +7,7 @@ class SimpleActor{
 		this.pos = pos;
 		this.size = size;
 	}
-	draw(ctx,cam){
-		
+	draw(ctx, cam){
 			if (this.image[0] == "#") {
 			ctx.fillStyle = this.image;
 			let centerPos = new Victor(this.pos.x, this.pos.y);
@@ -54,6 +53,7 @@ class Actor extends SimpleActor{
 		this.obeysBoundarys = obeysBoundarys;
 		this.turnResistance = 0;
 		this.attraction = attraction;
+		this.attractionBuffer = attraction;
 
 		if(this.mode == "client") {
 			var img = new Image();
@@ -110,7 +110,8 @@ class Actor extends SimpleActor{
 	}
 	post_update(sea) {
 		this.turnResistance = 0;
-		this.attraction = new Victor(0, 0);
+		this.attraction = this.attractionBuffer;
+		this.attractionBuffer = new Victor(0, 0);
 	}
 
 	get force() {

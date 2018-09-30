@@ -94,6 +94,9 @@ $(function() {
 					GAME_IS_READY = false;
 				}
 			}
+			if (player) {
+				sea.post_update();
+			}
 			//console.log(player.keys);
 		}
 	}

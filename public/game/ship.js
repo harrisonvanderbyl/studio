@@ -69,7 +69,9 @@ class Ship extends Actor {
 
 		if (this.keys.forward) super.boost();
 		if (this.keys.backward) super.brake();
+	}
 
+	post_update(sea) {
 		super.post_update(sea);
 	}
 
