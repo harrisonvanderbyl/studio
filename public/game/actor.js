@@ -37,7 +37,7 @@ class SimpleActor{
 }
 
 class Actor extends SimpleActor {
-	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, type, image) {
+	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, attraction, obeysBoundarys, type, image) {
 		super(image, pos, ang, size);
 		this.id = id;
 		this.type = type;
@@ -62,7 +62,7 @@ class Actor extends SimpleActor {
 	}
 
 	isTouchingActor(otherActor) {
-		return (this.pos.distanceSq(otherActor.pos) < Math.pow(this.radius + otherActor.radius, 2))
+		return (this.pos.distanceSq(otherActor.pos) < Math.pow(this.radius + otherActor.radius, 2));
 	}
 
 	get radius() {
