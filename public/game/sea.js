@@ -37,13 +37,21 @@ class Sea {
 				actor.importState(state.actors[i]);
 			} else {
 				console.log(
-					"(in sea.importState) couldn't find ship with id of",
+					"(in sea.importState) couldn't find actor with id of",
 					tstate.id,
 					"choosing to create one"
 				);
-				let s = new Ship(tstate.id);
-				s.importState(tstate);
-				this.addPlayer(s);
+				if (tstate.type == "ship") {
+					let s = new Ship(tstate.id);
+					s.mode = "client";
+					s.importState(tstate);
+					this.addPlayer(s);
+				} else if (tstate.type == "bh") {
+					let bh = new BlackHole(tstate.id);
+					bh.mode = "client";
+					bh.importState(tstate);
+					this.actors.push(bh);
+				}
 				//console.log("created ship with id",s.id);
 			}
 		}

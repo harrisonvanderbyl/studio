@@ -1,5 +1,5 @@
 
-# ships.io
+# Neutronic
 
 // https://github.com/Samuel-Clarke123/ships.io.git
 
@@ -12,15 +12,15 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] Boundaries implemented
 - [x] Timestep implemented
 - [x] 'Attraction' implemented (like traditional velocity, gets added to the force of an actor in update(), it's a 2dVec)
-- [ ] 'Attraction' also effects angle
-- [ ] Possibly even split the actor into two classes: simple actors, and dynamic actors (dynamic actors inherit from simple actors), but have more physics stuff implemented, like boundaries, drag, attraction, collision.
-- [ ] Collision code implemented for actors (just detecting collision, for now)
-- [ ] BlackHole can spawn, exist, and be drawn.
-- [ ] BlackHole can attract Actors
-- [ ] BlackHole gets activation timer
+- [x] 'Attraction' also effects angle
+- [x] Possibly even split the actor into two classes: simple actors, and dynamic actors (dynamic actors inherit from simple actors), but have more physics stuff implemented, like boundaries, drag, attraction, collision.
+- [x] Collision code implemented for actors (just detecting collision, for now)
+- [x] BlackHole can spawn, exist, and be drawn.
+- [x] BlackHole can attract Actors
+- [x] BlackHole gets activation timer
 - [ ] BlackHole gets different drawings/colors for activated/deactivated
-- [ ] Ship spits out actors parented to the ship
-- [ ] Ship spits out BlackHoles parented to the ship
+- [x] Ship spits out actors parented to the ship
+- [x] Ship spits out BlackHoles parented to the ship
 - [ ] <<< play test >>>
 - [ ] Ship death function implemented (goes invisible (except for death anim) and collision/shooting gets disabled)
 - [ ] Ship dies on collision with activated BlackHoles

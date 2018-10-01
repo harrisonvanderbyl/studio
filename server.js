@@ -107,12 +107,12 @@ io.on("connection", function(socket) {
 function updateSea(seaid) {
 	// todo: make this actually multithreaded. (if we want to use experimental builds of nodejs lol)
 	// todo: remove these dumb todo's
-	let sea = seas[seaid];
-	sea.update();
 
-	sea.post_update();
+	seas[seaid].update();
 
-	let state = sea.exportState();
+	seas[seaid].post_update();
+
+	let state = seas[seaid].exportState();
 	io.to("sea-" + seaid).emit("heartbeat", state);
 }
 

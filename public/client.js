@@ -14,7 +14,7 @@ $(function() {
 
 	let sea = new Sea();
 	const socket = io();
-	const mid = makeSlug(10, 10);
+	const mid = makeSlug(6, 6);
 
 	let playerMissingBuffer = 0;
 	let framesDrawn = 0;
@@ -65,7 +65,7 @@ $(function() {
 
 		function onKeyEv(e, tf) {
 			let player = sea.getActorById(mid);
-			sea.keyBuffers[mid] = player.retKey(e.keyCode, false);
+			sea.keyBuffers[mid] = player.retKey(e.keyCode, tf);
 			socket.emit(tf ? "keydown" : "keyup", roomNum, mid, e.keyCode);
 		}
 
@@ -109,7 +109,7 @@ $(function() {
 
 			ctx.fillStyle = "#112233";
 			ctx.fillRect(0, 0, cnv.width, cnv.height);
-			//drawScopes(cnv, ctx, 4);
+			drawScopes(cnv, ctx, 4);
 			ctx.translate(-cam.x, -cam.y);
 			sea.draw(ctx, cam);
 			ctx.translate(cam.x, cam.y);
