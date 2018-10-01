@@ -12,9 +12,9 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] Boundaries implemented
 - [x] Timestep implemented
 - [x] 'Attraction' implemented (like traditional velocity, gets added to the force of an actor in update(), it's a 2dVec)
-- [ ] 'Attraction' also effects angle
-- [ ] Possibly even split the actor into two classes: simple actors, and dynamic actors (dynamic actors inherit from simple actors), but have more physics stuff implemented, like boundaries, drag, attraction, collision.
-- [ ] Collision code implemented for actors (just detecting collision, for now)
+- [x] 'Attraction' also effects angle
+- [x] Possibly even split the actor into two classes: simple actors, and dynamic actors (dynamic actors inherit from simple actors), but have more physics stuff implemented, like boundaries, drag, attraction, collision.
+- [x] Collision code implemented for actors (just detecting collision, for now)
 - [ ] BlackHole can spawn, exist, and be drawn.
 - [ ] BlackHole can attract Actors
 - [ ] BlackHole gets activation timer

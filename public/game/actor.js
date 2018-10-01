@@ -1,13 +1,12 @@
 /* global Victor opts */
 class SimpleActor{
-	constructor(image,pos,ang,size){
-		
+	constructor(image, pos, ang, size) {
 		this.image = image;
 		this.ang = ang;
 		this.pos = pos;
 		this.size = size;
 	}
-	draw(ctx, cam){
+	draw(ctx, cam) {
 			if (this.image[0] == "#") {
 			ctx.fillStyle = this.image;
 			let centerPos = new Victor(this.pos.x, this.pos.y);
@@ -37,9 +36,9 @@ class SimpleActor{
 	}
 }
 
-class Actor extends SimpleActor{
-	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, attraction, obeysBoundarys, type, image) {
-		super(image,pos,ang,size);
+class Actor extends SimpleActor {
+	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, obeysBoundarys, type, image) {
+		super(image, pos, ang, size);
 		this.id = id;
 		this.type = type;
 		this.vel = vel * opts.TIMESTEP;
@@ -60,6 +59,14 @@ class Actor extends SimpleActor{
 			if(this.image[0] != "#") img.src = this.image;
 			this.img = img;
 		}
+	}
+
+	isTouchingActor(otherActor) {
+		return (this.pos.distanceSq(otherActor.pos) < Math.pow(this.radius + otherActor.radius, 2))
+	}
+
+	get radius() {
+		return (this.size.x + this.size.y) / 4;
 	}
 
 	exportState() {
@@ -85,7 +92,7 @@ class Actor extends SimpleActor{
 		this.type = state.type;
 		this.attraction = Victor.fromObject(state.attraction);
 	}
-
+	
 	update(sea) {
 
 		this.ang = correctAng(this.ang);
