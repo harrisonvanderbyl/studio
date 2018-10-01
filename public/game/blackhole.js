@@ -36,10 +36,10 @@ class BlackHole extends Actor {
 		for(let i in sea.actors) {
 			if(sea.actors[i].id != this.id) {
 				let tactor = sea.actors[i];
-				let tdist = this.pos.distance(tactor.pos) + 1;
+				let tdist = Math.max(this.pos.distance(tactor.pos) + 1, opts.MIN_ATTRACT_STRENGTH_DIST);
 				if(tdist < opts.MIN_ATTRACT_DIST) {
 					let attractionStrength = 1/tdist * this.mass * opts.BLACKHOLE_STRENGTH;
-					let vecTo = new Victor(0, 1).rotate(angleBetweenVectors(tactor.pos, this.pos))
+					let vecTo = new Victor(0, 1).rotate(angleBetweenVectors(tactor.pos, this.pos)+Math.PI/2)
 									.multiply(new Victor(attractionStrength, attractionStrength));
 					tactor.attractionBuffer.add(vecTo);
 				}
