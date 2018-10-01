@@ -84,6 +84,12 @@ class Sea {
 		}
 	}
 
+	post_update() {
+		for(let i in this.actors) {
+			this.actors[i].post_update(this);
+		}
+	}
+
 	draw(ctx, cam, cnv) {
 		ctx.fillStyle = "#60ff60";
 		for (let i = 0; i <= this.size.x; i += 100)

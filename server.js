@@ -110,6 +110,8 @@ function updateSea(seaid) {
 	let sea = seas[seaid];
 	sea.update();
 
+	sea.post_update();
+
 	let state = sea.exportState();
 	io.to("sea-" + seaid).emit("heartbeat", state);
 }
