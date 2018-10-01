@@ -9,22 +9,10 @@ class SimpleActor{
 	draw(ctx, cam) {
 			if (this.image[0] == "#") {
 			ctx.fillStyle = this.image;
-			let centerPos = new Victor(this.pos.x, this.pos.y);
-			ctx.save();
-			ctx.translate(centerPos.x, centerPos.y);
-			ctx.rotate(this.ang);
-			ctx.lineWidth = 4;
-			ctx.strokeStyle = "#cecefe";
 			ctx.beginPath();
-			ctx.moveTo(0, this.size.y / 2);
-			ctx.lineTo(this.size.x / 2, -this.size.y / 2);
-			ctx.lineTo(0, -this.size.y / 3);
-			ctx.lineTo(-this.size.x / 2, -this.size.y / 2);
-			ctx.lineTo(0, this.size.y / 2);
+			ctx.arc(this.pos.x, this.pos.y, (this.size.x+this.size.y)/2, 0, 2*Math.PI);
 			ctx.closePath();
-			ctx.stroke();
-			//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
-			ctx.restore();
+			ctx.fill();
 		} else {
 			let centerPos = new Victor(this.pos.x, this.pos.y);
 			ctx.save();
@@ -67,6 +55,10 @@ class Actor extends SimpleActor {
 
 	get radius() {
 		return (this.size.x + this.size.y) / 4;
+	}
+
+	get headVector() {
+		return new Victor(0, this.radius).rotate(this.ang).add(this.pos.clone());
 	}
 
 	exportState() {

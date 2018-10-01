@@ -13,26 +13,45 @@ class Ship extends Actor {
 		brakeSpeed = 0.125,
 		attraction = new Victor(0, 0),
 		obeysBoundarys = true,
-		bulletSpeed = 2.1,
+		bulletSpeed = 8,
+		shotRate = 30,
 		image = "#110011"
 	) {
 		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, 
 			attraction, obeysBoundarys, "ship", image);
-		this.keys = { left: false, right: false, forward: false, backward: false};
+		this.keys = { left: false, right: false, forward: false, backward: false, shoot: false };
 		this.bulletSpeed = bulletSpeed;
+		this.shotRate = shotRate;
+		this.shotCD = 0;
 		this.bullets = [];
 	}
 
-	get headVector() {
-		return this.pos.clone().add(this.force.multiply(new Victor(3, 3)));
+	shoot(sea, btype) {
+		if(this.shotCD <= 0) {
+			let thead = this.headVector;
+
+			let tbullets = this.getBullets(thead, btype);
+			if(this.mode == "server") {
+				for(let i in tbullets) sea.actors.push(tbullets[i]);
+			}
+
+			this.shotCD = this.shotRate;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	getBullets() {
-		let bpos = this.headVector;
+	getBullets(tpos, btype) {
+		// TODO: support for multishot / other btypes
+		let tbullets = [];
 
-		//TODO: support for spread bullets, etc.
+		if(btype == "bh") { //TODO: review the way velocity is made here
+			let tbh = new BlackHole(makeSlug(7, 7), this.id, tpos, this.bulletSpeed + this.vel / 4, this.mode, this.ang);
+			tbullets.push(tbh);
+		}
 
-		return bullets;
+		return tbullets;
 	}
 
 	exportState() {
@@ -58,6 +77,7 @@ class Ship extends Actor {
 		if (e == 39 || e == 68) tkeys.right = tf;
 		if (e == 38 || e == 87) tkeys.forward = tf;
 		if (e == 40 || e == 83) tkeys.backward = tf;
+		if (e == 32 || e == 13) tkeys.shoot = tf;
 		return tkeys;
 	}
 
@@ -69,14 +89,34 @@ class Ship extends Actor {
 
 		if (this.keys.forward) super.boost();
 		if (this.keys.backward) super.brake();
+
+		if (this.keys.shoot) this.shoot(sea, "bh");
 	}
 
 	post_update(sea) {
 		super.post_update(sea);
+
+		if(this.shotCD > 0) {
+			this.shotCD -= opts.TIMESTEP;
+		}
 	}
 
 	draw(ctx, cam) {
-		//stub
-		super.draw(ctx, cam);
+		let centerPos = new Victor(this.pos.x, this.pos.y);
+		ctx.save();
+		ctx.translate(centerPos.x, centerPos.y);
+		ctx.rotate(this.ang);
+		ctx.lineWidth = 4;
+		ctx.strokeStyle = "#cecefe";
+		ctx.beginPath();
+		ctx.moveTo(0, this.size.y / 2);
+		ctx.lineTo(this.size.x / 2, -this.size.y / 2);
+		ctx.lineTo(0, -this.size.y / 3);
+		ctx.lineTo(-this.size.x / 2, -this.size.y / 2);
+		ctx.lineTo(0, this.size.y / 2);
+		ctx.closePath();
+		ctx.stroke();
+		//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
+		ctx.restore();
 	}
 }

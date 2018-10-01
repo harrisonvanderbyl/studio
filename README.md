@@ -15,12 +15,12 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] 'Attraction' also effects angle
 - [x] Possibly even split the actor into two classes: simple actors, and dynamic actors (dynamic actors inherit from simple actors), but have more physics stuff implemented, like boundaries, drag, attraction, collision.
 - [x] Collision code implemented for actors (just detecting collision, for now)
-- [ ] BlackHole can spawn, exist, and be drawn.
-- [ ] BlackHole can attract Actors
-- [ ] BlackHole gets activation timer
+- [x] BlackHole can spawn, exist, and be drawn.
+- [x] BlackHole can attract Actors
+- [x] BlackHole gets activation timer
 - [ ] BlackHole gets different drawings/colors for activated/deactivated
-- [ ] Ship spits out actors parented to the ship
-- [ ] Ship spits out BlackHoles parented to the ship
+- [x] Ship spits out actors parented to the ship
+- [x] Ship spits out BlackHoles parented to the ship
 - [ ] <<< play test >>>
 - [ ] Ship death function implemented (goes invisible (except for death anim) and collision/shooting gets disabled)
 - [ ] Ship dies on collision with activated BlackHoles
