@@ -15,19 +15,46 @@ class Ship extends Actor {
 		obeysBoundarys = true,
 		bulletSpeed = 8,
 		shotRate = 30,
-		image = "#110011"
+		image = "#110011",
+		weight = 0.75,
+		isDead = false,
+		deathTimer = opts.RESPAWN_TIME
 	) {
 		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, 
-			attraction, obeysBoundarys, "ship", image);
+			attraction, obeysBoundarys, "ship", image, weight);
 		this.keys = { left: false, right: false, forward: false, backward: false, shoot: false };
 		this.bulletSpeed = bulletSpeed;
 		this.shotRate = shotRate;
 		this.shotCD = 0;
 		this.bullets = [];
+
+		this.isDead = isDead;
+		this.deathTimer = 120;
+		this.respawnTimer = -1;
+	}
+
+	kill() {
+		if(!this.isDead) {
+			this.isDead = true;
+			this.respawnTimer = this.deathTimer;
+			console.log(this.id, "DIED");
+		} else {
+			
+		}
+	}
+
+	revive(sea) {
+		if(this.mode == "server") {
+			let tpos = new Victor(0, 0).randomize(new Victor(0, 0), sea.size);
+			this.pos = tpos;
+			console.log(this.id, "REVIVED");
+			this.isDead = false;
+			this.respawnTimer = -1;
+		}
 	}
 
 	shoot(sea, btype) {
-		if(this.shotCD <= 0) {
+		if(this.shotCD <= 0 && !this.isDead) {
 			let thead = this.headVector;
 
 			let tbullets = this.getBullets(thead, btype);
@@ -58,6 +85,7 @@ class Ship extends Actor {
 		let state = super.exportState();
 		state.keys = this.keys;
 		state.health = this.health;
+		state.isDead = this.isDead;
 		return state;
 	}
 
@@ -65,6 +93,7 @@ class Ship extends Actor {
 		super.importState(state);
 		this.health = state.health;
 		this.keys = state.keys;
+		this.isDead = state.isDead;
 	}
 
 	setKey(e, tf = true) {
@@ -83,14 +112,21 @@ class Ship extends Actor {
 
 	update(sea) {
 		super.update(sea);
+		
+		if(!this.isDead) {
+			if (this.keys.left) super.turn(-1);
+			if (this.keys.right) super.turn(+1);
 
-		if (this.keys.left) super.turn(-1);
-		if (this.keys.right) super.turn(+1);
+			if (this.keys.forward) super.boost();
+			if (this.keys.backward) super.brake();
 
-		if (this.keys.forward) super.boost();
-		if (this.keys.backward) super.brake();
-
-		if (this.keys.shoot) this.shoot(sea, "bh");
+			if (this.keys.shoot) this.shoot(sea, "bh");
+		} else {
+			this.respawnTimer -= 1;
+			if(this.respawnTimer <= 0) {
+				this.revive(sea);
+			}
+		}
 	}
 
 	post_update(sea) {
@@ -103,20 +139,25 @@ class Ship extends Actor {
 
 	draw(ctx, cam) {
 		let centerPos = new Victor(this.pos.x, this.pos.y);
-		ctx.save();
-		ctx.translate(centerPos.x, centerPos.y);
-		ctx.rotate(this.ang);
-		ctx.lineWidth = 4;
-		ctx.strokeStyle = "#cecefe";
-		ctx.beginPath();
-		ctx.moveTo(0, this.size.y / 2);
-		ctx.lineTo(this.size.x / 2, -this.size.y / 2);
-		ctx.lineTo(0, -this.size.y / 3);
-		ctx.lineTo(-this.size.x / 2, -this.size.y / 2);
-		ctx.lineTo(0, this.size.y / 2);
-		ctx.closePath();
-		ctx.stroke();
-		//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
-		ctx.restore();
+		console.log(this.isDead);
+		if(!this.isDead) {
+			ctx.save();
+			ctx.translate(centerPos.x, centerPos.y);
+			ctx.rotate(this.ang);
+			ctx.lineWidth = 4;
+			ctx.strokeStyle = "#cecefe";
+			ctx.beginPath();
+			ctx.moveTo(0, this.size.y / 2);
+			ctx.lineTo(this.size.x / 2, -this.size.y / 2);
+			ctx.lineTo(0, -this.size.y / 3);
+			ctx.lineTo(-this.size.x / 2, -this.size.y / 2);
+			ctx.lineTo(0, this.size.y / 2);
+			ctx.closePath();
+			ctx.stroke();
+			//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
+			ctx.restore();
+		} else {
+			//TODO: dead screen drawing
+		}
 	}
 }

@@ -22,11 +22,11 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] Ship spits out actors parented to the ship
 - [x] Ship spits out BlackHoles parented to the ship
 - [ ] <<< play test >>>
-- [ ] Ship death function implemented (goes invisible (except for death anim) and collision/shooting gets disabled)
-- [ ] Ship dies on collision with activated BlackHoles
+- [x] Ship death function implemented (goes invisible (except for death anim) and collision/shooting gets disabled)
+- [x] Ship dies on collision with activated BlackHoles
 - [ ] <<< play test >>>
-- [ ] Decay code for BlackHoles
-- [ ] Merge code for BlackHoles
+- [x] Decay code for BlackHoles
+- [x] Merge code for BlackHoles
 - [ ] <<< play test >>>
 - [ ] Un-interactable stars get generated for drawing (just on the client side!)
 - [ ] Un-interactable stars get better decoration and drawing

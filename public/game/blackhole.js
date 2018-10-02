@@ -14,22 +14,13 @@ class BlackHole extends Actor {
 		brakeSpeed = 0.1,
 		attraction = new Victor(0, 0),
 		obeysBoundarys = false,
-		image = "#332233"
+		image = "#332233", 
+		weight = 6
 	) {
 		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, 
-			attraction, obeysBoundarys, "bh", image);
+			attraction, obeysBoundarys, "bh", image, weight);
 		this.framelife = framelife;
 		this.pid = pid;
-	}
-
-	get mass() {
-		return this.size.x*this.size.y;
-	}
-
-	set mass(m) {
-		let tt = Math.sqrt(m);
-		this.size.x = tt;
-		this.size.y = tt;
 	}
 
 	attract(sea) {
@@ -38,10 +29,28 @@ class BlackHole extends Actor {
 				let tactor = sea.actors[i];
 				let tdist = Math.max(this.pos.distance(tactor.pos) + 1, opts.MIN_ATTRACT_STRENGTH_DIST);
 				if(tdist < opts.MIN_ATTRACT_DIST) {
-					let attractionStrength = 1/tdist * this.mass * opts.BLACKHOLE_STRENGTH;
+					let tmass = tactor.mass;
+					let attractionStrength = 1/tdist * this.mass * opts.BLACKHOLE_STRENGTH / tmass;
 					let vecTo = new Victor(0, 1).rotate(angleBetweenVectors(tactor.pos, this.pos)+Math.PI/2)
 									.multiply(new Victor(attractionStrength, attractionStrength));
 					tactor.attractionBuffer.add(vecTo);
+				}
+			}
+		}
+	}
+	merge(sea) {
+		for(let i in sea.actors) {
+			if(sea.actors[i].id != this.id && (sea.actors[i].type == "ship" || this.mass < sea.actors[i].mass)) {
+				if(sea.actors[i].isTouchingActor(this)) {
+					if(sea.actors[i].type == "bh") {
+						sea.actors[i].mass += this.mass;
+						let nforce = sea.actors[i].force.add(this.force);
+						sea.actors[i].vel = nforce.length();
+						sea.actors[i].ang = nforce.angle()-Math.PI/2;
+						sea.removeActorById(this.id);
+					} else if(sea.actors[i].type == "ship") {
+						sea.actors[i].kill();
+					}
 				}
 			}
 		}
@@ -67,12 +76,16 @@ class BlackHole extends Actor {
 			super.brake();
 			this.attract(sea);
 		}
+		this.mass -= ((this.mass * opts.HAWKING_RADIATION) + opts.FLAT_RADIATION) * opts.TIMESTEP;
 	}
 
 	post_update(sea) {
 		super.post_update(sea);
 
 		if(this.framelife > 0) this.framelife -= 1 * opts.TIMESTEP;
+		else {
+			this.merge(sea);
+		}
 	}
 
 	draw(ctx, cam) {

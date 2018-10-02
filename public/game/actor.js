@@ -25,7 +25,7 @@ class SimpleActor{
 }
 
 class Actor extends SimpleActor {
-	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, attraction, obeysBoundarys, type, image) {
+	constructor(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, attraction, obeysBoundarys, type, image, weight) {
 		super(image, pos, ang, size);
 		this.id = id;
 		this.type = type;
@@ -41,6 +41,7 @@ class Actor extends SimpleActor {
 		this.turnResistance = 0;
 		this.attraction = attraction;
 		this.attractionBuffer = attraction;
+		this.weight = weight;
 
 		if(this.mode == "client") {
 			var img = new Image();
@@ -59,6 +60,16 @@ class Actor extends SimpleActor {
 
 	get headVector() {
 		return new Victor(0, this.radius).rotate(this.ang).add(this.pos.clone());
+	}
+
+	get mass() {
+		return this.size.x*this.size.y*this.weight;
+	}
+
+	set mass(m) {
+		let tt = Math.sqrt(m/this.weight);
+		this.size.x = tt;
+		this.size.y = tt;
 	}
 
 	exportState() {
