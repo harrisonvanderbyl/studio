@@ -4,11 +4,15 @@ $(function() {
 	let cnv = document.getElementById("main-canv");
 	let ctx = cnv.getContext("2d");
 
-	cnv.setAttribute("width", 500);
-	cnv.setAttribute("height", 500);
+	let padding = new Victor(50, 50);
+	let desiredSize = Math.min(window.innerHeight - padding.x, window.innerWidth - padding.y);
+	cnv.setAttribute("width",  desiredSize);
+	cnv.setAttribute("height", desiredSize);
 
-	let screenDims = new Victor(cnv.width, cnv.height);
-	console.log("screeDims", screenDims);
+	let screenDims = new Victor(800, 800);
+	let screenScale = new Victor(desiredSize, desiredSize).divide(screenDims);
+	console.log("desiredSize", desiredSize, "screenDims", screenDims, "screenScale", screenScale);
+	ctx.scale(screenScale.x, screenScale.y);
 
 	let GAME_IS_READY = false;
 
@@ -72,6 +76,7 @@ $(function() {
 		document.addEventListener("keydown", function(e) {
 			onKeyEv(e, true);
 		});
+
 		document.addEventListener("keyup", function(e) {
 			onKeyEv(e, false);
 		});
@@ -109,10 +114,11 @@ $(function() {
 
 			ctx.fillStyle = "#112233";
 			ctx.fillRect(0, 0, cnv.width, cnv.height);
-			drawScopes(cnv, ctx, 4);
 			ctx.translate(-cam.x, -cam.y);
 			sea.draw(ctx, cam);
 			ctx.translate(cam.x, cam.y);
+
+			drawScopes(screenDims, ctx, 4);
 
 			framesDrawn++;
 		}

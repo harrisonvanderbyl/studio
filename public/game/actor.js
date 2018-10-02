@@ -6,6 +6,7 @@ class SimpleActor{
 		this.pos = pos;
 		this.size = size;
 	}
+
 	draw(ctx, cam) {
 			if (this.image[0] == "#") {
 			ctx.fillStyle = this.image;
@@ -118,6 +119,7 @@ class Actor extends SimpleActor {
 			this.pos.add(this.force);
 		}
 	}
+
 	post_update(sea) {
 		this.turnResistance = 0;
 		this.attraction = this.attractionBuffer;
@@ -142,16 +144,17 @@ class Actor extends SimpleActor {
 		if(!vecIsInRange(this.pos.clone().add(this.force), topLeft, botRight)) {
 			let turnDir = 0;
 			this.ang = correctAng(this.ang);
+
 			if(this.pos.x > botRight.x) turnDir += this.makeTurn( Math.PI * .5);
 			if(this.pos.y > botRight.y) turnDir += this.makeTurn( Math.PI     );
 			if(this.pos.x <  topLeft.x) turnDir += this.makeTurn(-Math.PI * .5);
 			if(this.pos.y <  topLeft.y) turnDir += this.makeTurn( 0           );
+
 			if(turnDir != 0) {
 				this.turnResistance = 5;
 				this.ang += this.turnSpeed * turnDir * opts.TIMESTEP;
 
-				let attrToCenter = this.pos.clone().subtract(botRight.clone().multiply(new Victor(0.5, 0.5))).normalize().multiply(new Victor(-1,-1));
-				//console.log(attrToCenter);
+				let attrToCenter = this.pos.clone().subtract(botRight.clone().multiply(new Victor(0.5, 0.5))).normalize().multiply(new Victor(-1, -1));
 				this.attraction.add(attrToCenter.multiply(new Victor(this.vel/2.2, this.vel/2.2)));
 			}
 			this.vel += 0.12*opts.TIMESTEP;//stop people completely stopping outside of boundaries
