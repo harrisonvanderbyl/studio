@@ -21,7 +21,7 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [ ] BlackHole gets different drawings/colors for activated/deactivated
 - [x] Ship spits out actors parented to the ship
 - [x] Ship spits out BlackHoles parented to the ship
-- [ ] <<< play test >>>
+- [x] <<< play test >>>
 - [x] Ship death function implemented (goes invisible (except for death anim) and collision/shooting gets disabled)
 - [x] Ship dies on collision with activated BlackHoles
 - [ ] <<< play test >>>
@@ -32,6 +32,10 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [ ] Un-interactable stars get better decoration and drawing
 - [ ] Pulse effects for BlackHoles
 - [ ] More particle effects
+- [x] Fix up the HTML
+- [x] Fix up the game rendering (its just 500x500, static rn)
+- [ ] <<< play test >>>
+- [ ] Consider other options for this README, and consider the lasers, and if we want that to be a thing
 
 
 ## Sea

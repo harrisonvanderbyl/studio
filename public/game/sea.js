@@ -114,6 +114,7 @@ class Sea {
 		this.players += 1;
 		this.actors.push(ship);
 	}
+
 	removeActorById(pid) {
 		for (let i in this.actors) {
 			if (this.actors[i].id == pid) {
@@ -122,6 +123,7 @@ class Sea {
 			}
 		}
 	}
+	
 	removeActorByIndex(i) {
 		if (this.actors[i].type == "ship") this.players -= 1;
 		this.actors.splice(i, 1);

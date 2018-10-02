@@ -4,11 +4,20 @@ $(function() {
 	let cnv = document.getElementById("main-canv");
 	let ctx = cnv.getContext("2d");
 
-	cnv.setAttribute("width", 500);
-	cnv.setAttribute("height", 500);
+	let padding = new Victor(50, 50);
+	let desiredSize = Math.min(window.innerHeight - padding.x, window.innerWidth - padding.y);
+	$(cnv).attr("width",  desiredSize+"px");
+	$(cnv).attr("height", desiredSize+"px");
 
-	let screenDims = new Victor(cnv.width, cnv.height);
-	console.log("screeDims", screenDims);
+	let screenDims = new Victor(800, 800);
+	let screenScale = new Victor(desiredSize, desiredSize).divide(screenDims);
+	console.log("desiredSize", desiredSize, "screenDims", screenDims, "screenScale", screenScale);
+	ctx.scale(screenScale.x, screenScale.y);
+
+	let cnvBodyRect = cnv.getBoundingClientRect();
+
+	$("#data-overlay").css("top", cnvBodyRect.top+10).css("left", cnvBodyRect.left-10)
+					  .css("width", cnvBodyRect.width+"px").css("height", cnvBodyRect.height+"px");
 
 	let GAME_IS_READY = false;
 
@@ -72,6 +81,7 @@ $(function() {
 		document.addEventListener("keydown", function(e) {
 			onKeyEv(e, true);
 		});
+
 		document.addEventListener("keyup", function(e) {
 			onKeyEv(e, false);
 		});
@@ -107,12 +117,13 @@ $(function() {
 			let player = sea.getActorById(mid);
 			let cam = createCamera(player.pos.clone(), screenDims.clone(), sea.size.clone());
 
-			ctx.fillStyle = "#112233";
+			ctx.fillStyle = "#151527";
 			ctx.fillRect(0, 0, cnv.width, cnv.height);
-			drawScopes(cnv, ctx, 4);
 			ctx.translate(-cam.x, -cam.y);
 			sea.draw(ctx, cam);
 			ctx.translate(cam.x, cam.y);
+
+			drawScopes(screenDims, ctx, 4);
 
 			framesDrawn++;
 		}

@@ -1,5 +1,27 @@
+body {
+    width:  100vw;
+    height: 100vh;
+    background: #111122;
+    text-align: center;
+    z-index: 0;
+}
+#data-overlay {
+    position: absolute;
+    text-align: right;
+    z-index: 2;
+    color: white;
+}
+* {
+    margin: 0px;
+    padding: 0px;
+}
 #main-canv {
-    width: 500px;
-    height: 500px;
-    border: 1px solid red;
+    border: 3px solid #222233;
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
