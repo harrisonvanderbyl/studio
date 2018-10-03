@@ -20,6 +20,7 @@ $(function() {
 					  .css("width", cnvBodyRect.width+"px").css("height", cnvBodyRect.height+"px");
 
 	let GAME_IS_READY = false;
+	let GAME_IS_HIDDEN = false;
 
 	let sea = new Sea();
 	const socket = io();
@@ -73,9 +74,15 @@ $(function() {
 		});
 
 		function onKeyEv(e, tf) {
-			let player = sea.getActorById(mid);
-			sea.keyBuffers[mid] = player.retKey(e.keyCode, tf);
-			socket.emit(tf ? "keydown" : "keyup", roomNum, mid, e.keyCode);
+			if(tf && e.keyCode == 27) {
+				GAME_IS_HIDDEN = !GAME_IS_HIDDEN;
+				$(cnv).fadeTo(800, (GAME_IS_HIDDEN ? 0.2 : 1));
+			}
+			else {
+				let player = sea.getActorById(mid);
+				sea.keyBuffers[mid] = player.retKey(e.keyCode, tf);
+				socket.emit(tf ? "keydown" : "keyup", roomNum, mid, e.keyCode);
+			}
 		}
 
 		document.addEventListener("keydown", function(e) {
@@ -118,7 +125,7 @@ $(function() {
 			let cam = createCamera(player.pos.clone(), screenDims.clone(), sea.size.clone());
 
 			ctx.fillStyle = "#151527";
-			ctx.fillRect(0, 0, cnv.width, cnv.height);
+			ctx.fillRect(0, 0, screenDims.x, screenDims.y);
 			ctx.translate(-cam.x, -cam.y);
 			sea.draw(ctx, cam);
 			ctx.translate(cam.x, cam.y);
