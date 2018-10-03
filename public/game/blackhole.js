@@ -20,7 +20,12 @@ class BlackHole extends Actor {
 		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, 
 			attraction, obeysBoundarys, "bh", image, weight);
 		this.framelife = framelife;
+		this.ogframelife = framelife;
 		this.pid = pid;
+
+		this.drawingFrame = 0;
+		this.frameRange = 1;
+		this.frameRate = 0.034;
 	}
 
 	attract(sea) {
@@ -38,18 +43,23 @@ class BlackHole extends Actor {
 			}
 		}
 	}
+
 	merge(sea) {
-		for(let i in sea.actors) {
-			if(sea.actors[i].id != this.id && (sea.actors[i].type == "ship" || this.mass < sea.actors[i].mass)) {
-				if(sea.actors[i].isTouchingActor(this)) {
-					if(sea.actors[i].type == "bh") {
-						sea.actors[i].mass += this.mass;
-						let nforce = sea.actors[i].force.add(this.force);
-						sea.actors[i].vel = nforce.length();
-						sea.actors[i].ang = nforce.angle()-Math.PI/2;
-						sea.removeActorById(this.id);
-					} else if(sea.actors[i].type == "ship") {
-						sea.actors[i].kill();
+		if(this.mass < opts.BLACKHOLE_MIN_MASS) {
+			sea.removeActorById(this.id);
+		} else {
+			for(let i in sea.actors) {
+				if(sea.actors[i].id != this.id && (sea.actors[i].type == "ship" || this.mass < sea.actors[i].mass)) {
+					if(sea.actors[i].isTouchingActor(this)) {
+						if(sea.actors[i].type == "bh") {
+							sea.actors[i].mass += this.mass;
+							let nforce = sea.actors[i].force.add(this.force);
+							sea.actors[i].vel = nforce.length();
+							sea.actors[i].ang = nforce.angle()-Math.PI/2;
+							sea.removeActorById(this.id);
+						} else if(sea.actors[i].type == "ship") {
+							sea.actors[i].kill();
+						}
 					}
 				}
 			}
@@ -77,6 +87,11 @@ class BlackHole extends Actor {
 			this.attract(sea);
 		}
 		this.mass -= ((this.mass * opts.HAWKING_RADIATION) + opts.FLAT_RADIATION) * opts.TIMESTEP;
+		
+		this.drawingFrame += this.frameRate * opts.TIMESTEP;
+		this.drawingFrame %= this.frameRange;
+
+		this.frameRate = 0.003 * this.radius;
 	}
 
 	post_update(sea) {
@@ -89,6 +104,22 @@ class BlackHole extends Actor {
 	}
 
 	draw(ctx, cam) {
+		let auraSize = this.radius * 3;
+		if(this.framelife > 1) {
+			ctx.globalAlpha = Math.max((this.ogframelife-this.framelife),6)/this.ogframelife;
+
+			ctx.strokeStyle = "#32365f";
+			ctx.beginPath();
+			ctx.arc(this.pos.x, this.pos.y, auraSize, 0, Math.PI*2*((this.ogframelife-this.framelife)/this.ogframelife));
+			ctx.stroke();
+		}
 		super.draw(ctx, cam);
+		if(this.framelife <= 0) {
+			ctx.strokeStyle = "#32365f90";
+			ctx.beginPath();
+			ctx.arc(this.pos.x, this.pos.y, auraSize * (1-this.drawingFrame) + this.radius, 0, Math.PI*2);
+			ctx.stroke();
+		}
+		ctx.globalAlpha = 1;
 	}
 }
