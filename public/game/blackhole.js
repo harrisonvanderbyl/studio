@@ -13,7 +13,7 @@ class BlackHole extends Actor {
 		turnSpeed = 0.25,
 		brakeSpeed = 0.1,
 		attraction = new Victor(0, 0),
-		obeysBoundarys = false,
+		obeysBoundarys = true,
 		image = "#332233", 
 		weight = 6
 	) {

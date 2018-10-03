@@ -17,6 +17,10 @@ let seas = [];
 app.use(express.static("public"));
 
 app.get("/", function(req, res) {
+	res.sendFile(__dirname + "/views/menu.html");
+});
+
+app.get("/game", function(req, res) {
 	res.sendFile(__dirname + "/views/index.html");
 });
 
@@ -29,6 +33,7 @@ function removePlayer(pid) {
 	let tsea = seas[playersSeas[pid]];
 	if (tsea) {
 		tsea.removeActorById(pid);
+		console.log(tsea.players + " players are logged in right now.");
 	}
 	delete playersSeas[pid];
 	delete lastPings[pid];
@@ -47,8 +52,10 @@ setInterval(checkPings, 500);
 
 function keyProc(tf, socket, room, pid, key) {
 	if (seas[room]) {
-		let keyBuf = seas[room].getActorById(pid).retKey(key, tf);
-		seas[room].keyBuffers[pid] = keyBuf;
+		if(seas[room].getActorById(pid).retKey) {
+			let keyBuf = seas[room].getActorById(pid).retKey(key, tf);
+			seas[room].keyBuffers[pid] = keyBuf;
+		}
 	} else {
 		socket.emit(
 			"fatalerror",
@@ -73,7 +80,7 @@ io.on("connection", function(socket) {
 		keyProc(false, socket, room, pid, key);
 	});
 
-	socket.on("enter lobby", function(seaid, pid) {
+	socket.on("enter lobby", function(seaid, pid, pname) {
 		if (seaid >= SEAS_LIMIT)
 			return socket.emit(
 				"fatalerror",
@@ -93,9 +100,9 @@ io.on("connection", function(socket) {
 		socket.join("sea-" + seaid);
 
 		let tpos = new Victor(0, 0).randomize(new Victor(0, 0), seas[seaid].size);
-		let pship = new gm.Ship(pid, tpos, mode="server");
+		let pship = new gm.Ship(pid, tpos, "server", pname);
 		console.log(pship.id);
-		seas[seaid].actors.push(pship);
+		seas[seaid].addPlayer(pship);
 
 		let toClient = {
 			sea: seas[seaid].exportState(),

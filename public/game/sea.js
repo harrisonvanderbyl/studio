@@ -100,10 +100,11 @@ class Sea {
 
 	draw(ctx, cam, cnv) {
 		ctx.fillStyle = "#60ff60";
-		for (let i = 0; i <= this.size.x; i += 100)
+		for (let i = 0; i <= this.size.x; i += 100) {
 			for (let j = 0; j <= this.size.y; j += 100) {
 				ctx.fillRect(i - 2, j - 2, 4, 4);
 			}
+		}
 
 		for (let i in this.actors) {
 			this.actors[i].draw(ctx, cam);
@@ -130,6 +131,7 @@ class Sea {
 	}
 
 	get isFull() {
+		console.log(this.players + " players are logged in right now.");
 		return this.players >= this.maxPlayers;
 	}
 }

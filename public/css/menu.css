@@ -1,0 +1,28 @@
+body {
+    width:  100vw;
+    height: 100vh;
+    background: url("/NEUTRONIC.png");
+    background-size: 100%;
+    text-align: center;
+}
+* {
+    margin: 0px;
+    padding: 0px;
+}
+.menu-holder {
+    background: #4238389a;
+    margin: auto;
+    display: block;
+    border-radius: 7px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+form.row div.col-6 {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+form.row div.col-12 {
+    margin-top: 20px;
+    margin-bottom: 50px;
+}

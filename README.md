@@ -23,10 +23,10 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] <<< play test >>>
 - [x] Ship death function implemented (goes invisible (except for death anim) and collision/shooting gets disabled)
 - [x] Ship dies on collision with activated BlackHoles
-- [ ] <<< play test >>>
+- [x] <<< play test >>>
 - [x] Decay code for BlackHoles
 - [x] Merge code for BlackHoles
-- [ ] <<< play test >>>
+- [x] <<< play test >>>
 - [ ] Un-interactable stars get generated for drawing (just on the client side!)
 - [ ] Un-interactable stars get better decoration and drawing
 - [x] Pulse effects for BlackHoles
@@ -34,7 +34,13 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] Fix up the HTML
 - [x] Fix up the game rendering (its just 500x500, static rn)
 - [ ] <<< play test >>>
-- [ ] Consider other options for this README, and consider the lasers, and if we want that to be a thing
+- [ ] Revise the velocity system
+- [x] Add a menu system
+- [x] Track player names
+- [x] Add support for name selection to the menu system
+- [ ] Add support for room selection to the menu system
+- [ ] Add powerups [just the ability to go invincible, briefly, for now]
+- [ ] <<< Consider other options for this README, and consider the lasers, and if we want that to be a thing >>>
 
 
 ## Sea

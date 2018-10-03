@@ -31,10 +31,11 @@ $(function() {
 
 	let url = new URL(window.location.href);
 	let roomNum = url.searchParams.get("room") || -1;
+	let name = url.searchParams.get("name") || "";
 
 	function setup() {
 		console.log("my player id is: ", mid);
-		socket.emit("enter lobby", roomNum, mid);
+		socket.emit("enter lobby", roomNum, mid, name);
 
 		socket.on("fatalerror", function(err) {
 			alert(err);
@@ -130,7 +131,7 @@ $(function() {
 			sea.draw(ctx, cam);
 			ctx.translate(cam.x, cam.y);
 
-			drawScopes(screenDims, ctx, 4);
+			//drawScopes(screenDims, ctx, 4);
 
 			framesDrawn++;
 		}

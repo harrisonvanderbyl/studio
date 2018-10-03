@@ -4,6 +4,7 @@ class Ship extends Actor {
 		id,
 		pos = new Victor(10, 10),
 		mode = "client",
+		pname = "Pilot0",
 		size = new Victor(30, 30),
 		vel = 0.5,
 		ang = 0,
@@ -31,6 +32,7 @@ class Ship extends Actor {
 		this.isDead = isDead;
 		this.deathTimer = deathTimer;
 		this.respawnTimer = -1;
+		this.pname = pname;
 	}
 
 	kill() {
@@ -86,6 +88,7 @@ class Ship extends Actor {
 		state.keys = this.keys;
 		state.health = this.health;
 		state.isDead = this.isDead;
+		state.pname = this.pname;
 		return state;
 	}
 
@@ -94,6 +97,7 @@ class Ship extends Actor {
 		this.health = state.health;
 		this.keys = state.keys;
 		this.isDead = state.isDead;
+		this.pname = state.pname;
 	}
 
 	setKey(e, tf = true) {
@@ -139,7 +143,6 @@ class Ship extends Actor {
 
 	draw(ctx, cam) {
 		let centerPos = new Victor(this.pos.x, this.pos.y);
-		console.log(this.isDead);
 		if(!this.isDead) {
 			ctx.save();
 			ctx.translate(centerPos.x, centerPos.y);
@@ -156,6 +159,10 @@ class Ship extends Actor {
 			ctx.stroke();
 			//ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
 			ctx.restore();
+
+			ctx.fillStyle = "#ccc";
+			ctx.font = "16px Arial";
+			ctx.fillText(this.pname, this.pos.x - (16/4*this.pname.length), this.pos.y+this.size.y + 10); 
 		} else {
 			//TODO: dead screen drawing
 		}
