@@ -1,4 +1,3 @@
-
 # Neutronic
 
 // https://github.com/Samuel-Clarke123/ships.io.git
@@ -18,7 +17,7 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] BlackHole can spawn, exist, and be drawn.
 - [x] BlackHole can attract Actors
 - [x] BlackHole gets activation timer
-- [ ] BlackHole gets different drawings/colors for activated/deactivated
+- [x] BlackHole gets different drawings/colors for activated/deactivated
 - [x] Ship spits out actors parented to the ship
 - [x] Ship spits out BlackHoles parented to the ship
 - [x] <<< play test >>>
@@ -30,7 +29,7 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [ ] <<< play test >>>
 - [ ] Un-interactable stars get generated for drawing (just on the client side!)
 - [ ] Un-interactable stars get better decoration and drawing
-- [ ] Pulse effects for BlackHoles
+- [x] Pulse effects for BlackHoles
 - [ ] More particle effects
 - [x] Fix up the HTML
 - [x] Fix up the game rendering (its just 500x500, static rn)

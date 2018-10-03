@@ -29,7 +29,7 @@ class Ship extends Actor {
 		this.bullets = [];
 
 		this.isDead = isDead;
-		this.deathTimer = 120;
+		this.deathTimer = deathTimer;
 		this.respawnTimer = -1;
 	}
 
