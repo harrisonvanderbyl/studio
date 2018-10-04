@@ -3,3 +3,24 @@
     height: 500px;
     border: 1px solid red;
 }
+.menu{
+    cursor: pointer;
+   
+}
+.ui{
+    background-color : #777777;
+    height:50%;
+}
+.editor{
+    background-color : #777777;
+    height:50%;
+}
+
+.topcls{
+
+
+}
+body{
+
+    background-color : #555555
+}

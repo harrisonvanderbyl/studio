@@ -91,7 +91,7 @@ io.on("connection", function(socket) {
 		socket.join("sea-" + seaid);
 
 		let tpos = new Victor(0, 0).randomize(new Victor(0, 0), seas[seaid].size);
-		let pship = new gm.Ship(pid, tpos, mode="server");
+		let pship = new gm.Actor(pid,'', tpos);//, mode="server");
 		console.log(pship.id);
 		seas[seaid].actors.push(pship);
 

@@ -5,27 +5,42 @@
     <title>Socket is I</title>
   
     <!-- css libs-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  
     <!-- js libs-->
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" 
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" 
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/victor/1.1.0/victor.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  
     <!-- local css-->
     <link rel="stylesheet" href="./css/style.css">
     <!-- local js -->
+    <script src="./framework/visualtypes.js"></script>
+    <script src="./framework/ui.js"></script>
     <script src="./game/opts.js"></script>
     <script src="./game/helperfuncs.js"></script>
     <script src="./game/actor.js"></script>
-    <script src="./game/ship.js"></script>
     <script src="./game/sea.js"></script>
     <script src="./client.js"></script>
   </head>
   <body>
+    <div class='row container-fluid topcls'>
+    
+    <div class='col-3 addui'>
+
+    </div>
+    <div class='col-4 editor container-fluid'>
+
+    </div>
+    <div class='col-5'>
     <canvas id="main-canv"></canvas>
     <div id="data-holder">Ping: <span id="game-ping">?</span>  FPS: <span id="game-fps">?</span></div>
     <div id="ship-holder">Ship: Pos: &lt;<span id="ship-posx">?</span>, <span id="ship-posy">?</span>&gt; 
       Ang: <span id="ship-ang">?</span>
       Vel: <span id="ship-vel">?</span></div>
+      </div></div>
   </body>
 </html>

@@ -1,6 +1,7 @@
 /* global Actor Sea Victor $ opts makeSlug io URL Ship */
 
 $(function() {
+	adduitodiv('addui');
 	let cnv = document.getElementById("main-canv");
 	let ctx = cnv.getContext("2d");
 
@@ -105,7 +106,7 @@ $(function() {
 	function draw() {
 		if (GAME_IS_READY) {
 			let player = sea.getActorById(mid);
-			let cam = createCamera(player.pos.clone(), screenDims.clone(), sea.size.clone());
+			let cam = createCamera(new Victor(player.state.pos[0],player.state.pos[1]), screenDims.clone(), sea.size.clone());
 
 			ctx.fillStyle = "#112233";
 			ctx.fillRect(0, 0, cnv.width, cnv.height);

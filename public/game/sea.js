@@ -9,14 +9,14 @@ class Sea {
 		this.size = size;
 
 		for (let i in this.actors) {
-			if (this.actors[i].type == "ship") this.players += 1;
+			if (this.actors[i].state.type == "ship") this.players += 1;
 		}
 		this.keyBuffers = {};
 	}
 
 	getActorById(pid, tactors = this.actors) {
 		for (let i in tactors) {
-			if (tactors[i].id == pid) return tactors[i];
+			if (tactors[i].state.id == pid) return tactors[i];
 		}
 		return false;
 	}
@@ -32,7 +32,7 @@ class Sea {
 
 		for (let i in state.actors) {
 			let tstate = state.actors[i];
-			let actor = this.getActorById(state.actors[i].id);
+			let actor = this.getActorById(state.actors[i].state.id);
 			if (actor) {
 				actor.importState(state.actors[i]);
 			} else {
@@ -41,16 +41,16 @@ class Sea {
 					tstate.id,
 					"choosing to create one"
 				);
-				let s = new Ship(tstate.id);
+				let s = new Actor(tstate.id,'stub');
 				s.importState(tstate);
 				this.addPlayer(s);
 				//console.log("created ship with id",s.id);
 			}
 		}
 		for (let i in this.actors) {
-			let actor = this.getActorById(this.actors[i].id, state.actors);
+			let actor = this.getActorById(this.actors[i].state.id, state.actors);
 			if (actor == false) {
-				console.log("removing actor with id of " + this.actors[i].id);
+				console.log("removing actor with id of " + this.actors[i].state.id);
 				// the actor doesn't exist in the new state, it should be removed.
 				this.removeActorByIndex(i);
 			}
@@ -108,14 +108,14 @@ class Sea {
 	}
 	removeActorById(pid) {
 		for (let i in this.actors) {
-			if (this.actors[i].id == pid) {
-				if (this.actors[i].type == "ship") this.players -= 1;
+			if (this.actors[i].state.id == pid) {
+				if (this.actors[i].state.type == "ship") this.players -= 1;
 				this.actors.splice(i, 1);
 			}
 		}
 	}
 	removeActorByIndex(i) {
-		if (this.actors[i].type == "ship") this.players -= 1;
+		if (this.actors[i].state.type == "ship") this.players -= 1;
 		this.actors.splice(i, 1);
 	}
 
