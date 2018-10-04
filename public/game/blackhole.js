@@ -52,13 +52,21 @@ class BlackHole extends Actor {
 				if(sea.actors[i].id != this.id && (sea.actors[i].type == "ship" || this.mass < sea.actors[i].mass)) {
 					if(sea.actors[i].isTouchingActor(this)) {
 						if(sea.actors[i].type == "bh") {
-							sea.actors[i].mass += this.mass;
-							let nforce = sea.actors[i].force.add(this.force);
-							sea.actors[i].vel = nforce.length();
-							sea.actors[i].ang = nforce.angle()-Math.PI/2;
-							sea.removeActorById(this.id);
+							if(sea.actors[i].framelife <= 0) {
+								sea.actors[i].mass += this.mass;
+								let nforce = sea.actors[i].force.add(this.force);
+								sea.actors[i].vel = nforce.length();
+								sea.actors[i].ang = nforce.angle()-Math.PI/2;
+								sea.removeActorById(this.id);
+							}
 						} else if(sea.actors[i].type == "ship") {
+							if(this.pid != sea.actors[i].pid) { // if the owner of this blackhole isnt the same person whos dying (a person killing themself)
+								let ownerPlayer = sea.getActorById(this.pid);
+								if(ownerPlayer.type == "ship") ownerPlayer.giveInvisJump(1);
+							}
+
 							sea.actors[i].kill();
+							sea.actors[i].giveInvisJump(-1);
 						}
 					}
 				}
