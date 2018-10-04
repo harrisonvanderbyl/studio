@@ -19,11 +19,12 @@ class Ship extends Actor {
 		image = "#110011",
 		weight = 0.75,
 		isDead = false,
-		deathTimer = opts.RESPAWN_TIME
+		deathTimer = opts.RESPAWN_TIME,
+		invisJumps = 1
 	) {
 		super(id, pos, mode, size, vel, ang, accel, velCap, turnSpeed, brakeSpeed, 
 			attraction, obeysBoundarys, "ship", image, weight);
-		this.keys = { left: false, right: false, forward: false, backward: false, shoot: false };
+		this.keys = { left: false, right: false, forward: false, backward: false, shoot: false, power: false };
 		this.bulletSpeed = bulletSpeed;
 		this.shotRate = shotRate;
 		this.shotCD = 0;
@@ -33,6 +34,10 @@ class Ship extends Actor {
 		this.deathTimer = deathTimer;
 		this.respawnTimer = -1;
 		this.pname = pname;
+
+		this.invisJumps = invisJumps;
+		this.invisCD = 0;
+		this.invisTimer = 0;
 	}
 
 	kill() {
@@ -55,6 +60,20 @@ class Ship extends Actor {
 		}
 	}
 
+	giveInvisJump(amt) {
+		this.invisJumps = Math.max(Math.min(this.invisJumps + amt, opts.MAX_INVIS_JUMPS), 0);
+	}
+
+	invis(sea) {
+		if(this.timeToInvis <= 0) {
+			if(this.invisJumps > 0) {
+				this.invisTimer = opts.INVIS_DURATION;
+				this.invisCD = opts.INVIS_DURATION + 5;
+				this.invisJumps -= 1;
+			}
+		}
+	}
+
 	shoot(sea, btype) {
 		if(this.shotCD <= 0 && !this.isDead) {
 			let thead = this.headVector;
@@ -72,7 +91,7 @@ class Ship extends Actor {
 	}
 
 	getBullets(tpos, btype) {
-		// TODO: support for multishot / other btypes
+		// TODO: support for multishot / other btypes (maybe)
 		let tbullets = [];
 
 		if(btype == "bh") { //TODO: review the way velocity is made here
@@ -85,19 +104,28 @@ class Ship extends Actor {
 
 	exportState() {
 		let state = super.exportState();
+
 		state.keys = this.keys;
 		state.health = this.health;
 		state.isDead = this.isDead;
 		state.pname = this.pname;
+		state.invisJumps = this.invisJumps;
+		state.invisCD = this.invisCD;
+		state.invisTimer = this.invisTimer;
+
 		return state;
 	}
 
 	importState(state) {
 		super.importState(state);
+
 		this.health = state.health;
 		this.keys = state.keys;
 		this.isDead = state.isDead;
 		this.pname = state.pname;
+		this.invisJumps = state.invisJumps;
+		this.invisCD = state.invisCD;
+		this.invisTimer = state.invisTimer;
 	}
 
 	setKey(e, tf = true) {
@@ -106,11 +134,14 @@ class Ship extends Actor {
 
 	retKey(e, tf = true) {
 		let tkeys = this.keys;
+
 		if (e == 37 || e == 65) tkeys.left = tf;
 		if (e == 39 || e == 68) tkeys.right = tf;
 		if (e == 38 || e == 87) tkeys.forward = tf;
 		if (e == 40 || e == 83) tkeys.backward = tf;
 		if (e == 32 || e == 13) tkeys.shoot = tf;
+		if (e == 16 || e == 76) tkeys.power = tf;
+
 		return tkeys;
 	}
 
@@ -139,10 +170,20 @@ class Ship extends Actor {
 		if(this.shotCD > 0) {
 			this.shotCD -= opts.TIMESTEP;
 		}
+		if(this.invisCD > 0) {
+			this.invisCD -= opts.TIMESTEP;
+		}
+		if(this.invisTimer > 0) {
+			this.invisTimer -= opts.TIMESTEP;
+		}
 	}
 
 	draw(ctx, cam) {
 		let centerPos = new Victor(this.pos.x, this.pos.y);
+
+		let invisPercent = Math.abs(((opts.INVIS_DURATION - this.invisTimer) / opts.INVIS_DURATION) - 0.5)*2;
+		ctx.globalAlpha = invisPercent;
+
 		if(!this.isDead) {
 			ctx.save();
 			ctx.translate(centerPos.x, centerPos.y);
@@ -162,9 +203,19 @@ class Ship extends Actor {
 
 			ctx.fillStyle = "#ccc";
 			ctx.font = "16px Arial";
-			ctx.fillText(this.pname, this.pos.x - (16/4*this.pname.length), this.pos.y+this.size.y + 10); 
+
+			ctx.fillText(this.pname, this.pos.x - (16/4*this.pname.length), this.pos.y+this.size.y + 10);
+			
+			let startPos = this.pos.x - (opts.INVIS_JUMP_DISPLAY_SIZE * opts.MAX_INVIS_JUMPS) + (opts.INVIS_JUMP_DISPLAY_PADD * (opts.MAX_INVIS_JUMPS - 1));
+			let yPos = this.pos.y - 50;
+			for(let i = 0; i < this.invisJumps; i++) {
+				let nxPos = (startPos + (opts.INVIS_JUMP_DISPLAY_SIZE + opts.INVIS_JUMP_DISPLAY_PADD) * i) - opts.INVIS_JUMP_DISPLAY_PADD;
+				ctx.fillRect(nxPos, yPos, opts.INVIS_JUMP_DISPLAY_SIZE, opts.INVIS_JUMP_DISPLAY_SIZE);
+			}
 		} else {
 			//TODO: dead screen drawing
 		}
+
+		ctx.globalAlpha = 1;
 	}
 }

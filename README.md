@@ -38,8 +38,14 @@ A simple web game, hosted on nodeJS using Sockets.io.
 - [x] Add a menu system
 - [x] Track player names
 - [x] Add support for name selection to the menu system
-- [ ] Add support for room selection to the menu system
-- [ ] Add powerups [just the ability to go invincible, briefly, for now]
+- [x] Add support for room selection to the menu system
+- [x] Start tracking "invisJumps".
+- [x] Start displaying "invisJumps".
+- [x] Start tracking power presses / actually using invisJumps
+- [x] Change how a ship is displayed whilst invis
+- [ ] Make invis players ignore physics / death
+- [ ] Award invisJumps to players when they kill other players
+- [ ] Add a scoreboard to the game
 - [ ] <<< Consider other options for this README, and consider the lasers, and if we want that to be a thing >>>
 
 
